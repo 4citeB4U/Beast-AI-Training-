@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer components {
+  .tactical-overlay {
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    background-size: 100% 4px, 3px 100%;
+    z-index: 10;
+  }
+
+  .vignette {
+    @apply absolute inset-0 pointer-events-none shadow-[inset_0_0_150px_rgba(0,0,0,0.8)];
+    z-index: 11;
+  }
+
+  .scanline {
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(32, 255, 128, 0.08) 50%,
+      transparent 51%,
+      transparent 100%
+    );
+    background-size: 100% 8px;
+    animation: scanline 8s linear infinite;
+    z-index: 12;
+  }
+
+  .cyber-glow {
+    @apply shadow-[0_0_15px_rgba(16,185,129,0.4)];
+  }
+
+  .cyber-text-glow {
+    text-shadow: 0 0 10px rgba(16,185,129,0.5);
+  }
+
+  @keyframes scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100%; }
+  }
+
+  .tactical-image-container {
+    @apply relative overflow-hidden;
+  }
+
+  .tactical-image-container::after {
+    content: '';
+    @apply absolute inset-0 bg-emerald-500/5 mix-blend-overlay pointer-events-none;
+  }
+
+  .glitch-hover:hover {
+    animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+  }
+}
+
+
