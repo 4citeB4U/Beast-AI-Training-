@@ -1,15 +1,15 @@
 const CACHE_NAME = 'beast-ai-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
-  '/assets/setup.png',
-  '/assets/agent-engineer.png',
-  '/assets/advanced.png',
-  '/assets/cert.png',
-  '/assets/society.png'
+  './',
+  'index.html',
+  'manifest.json',
+  'icons/icon-192x192.png',
+  'icons/icon-512x512.png',
+  'assets/setup.png',
+  'assets/agent-engineer.png',
+  'assets/advanced.png',
+  'assets/cert.png',
+  'assets/society.png'
 ];
 
 self.addEventListener('install', (event) => {
