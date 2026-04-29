@@ -15,7 +15,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Normalize git URL protocol for CI
+        run: |
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
       - name: Install and Build
+        env:
+          GIT_TERMINAL_PROMPT: 0
         run: |
           npm install
           npm run build
