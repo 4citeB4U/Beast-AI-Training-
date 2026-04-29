@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.COMPONENT
 TAG: UI.BEAST.COMPONENT.PROCTOR_BANNER
 DESCRIPTION: Proctoring banner for Agent Lee to guide students

@@ -6,7 +6,7 @@
     <title>BEAST AI Academy | Powered by Leeway Innovations</title>
     <link rel="manifest" href="/manifest.json" />
     <style>
-      body { margin: 0; background: #0a0a0a; font-family: 'Inter', sans-serif; overflow: hidden; }
+      body { margin: 0; background: #0a0a0a; font-family: 'Inter', sans-serif; overflow-x: hidden; }
       #splash-screen {
         position: fixed;
         inset: 0;
@@ -15,8 +15,9 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        z-index: 50;
-        transition: opacity 0.5s ease-out, visibility 0.5s;
+        z-index: 100;
+        transition: opacity 0.4s ease-in-out, visibility 0.4s;
+        will-change: opacity;
       }
       .boot-container {
         width: 240px;
@@ -27,13 +28,22 @@
         font-size: 2rem;
         font-weight: 900;
         letter-spacing: -0.05em;
-        margin-bottom: 1rem;
+        margin-bottom: 0.25rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.5rem;
+        gap: 0.15rem;
+        color: #fff;
       }
       .boot-logo span { color: #10b981; }
+      .boot-subtitle {
+        font-size: 7px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: #525252;
+        margin-bottom: 1.25rem;
+      }
       .boot-bar {
         height: 2px;
         width: 100%;
@@ -77,6 +87,7 @@
       <div class="scanline"></div>
       <div class="boot-container">
         <div class="boot-logo">BEAST<span>AI</span></div>
+        <div class="boot-subtitle">Powered by Leeway Innovations</div>
         <div class="boot-bar">
           <div class="boot-progress"></div>
         </div>
@@ -85,6 +96,29 @@
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // HARD FAIL-SAFE: If the main bundle doesn't load within 4s, hide the splash anyway.
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash && getComputedStyle(splash).opacity !== '0') {
+          console.warn('HARD_FAIL_SAFE: Hiding splash screen via inline script.');
+          splash.style.opacity = '0';
+          splash.style.visibility = 'hidden';
+          document.body.style.overflow = 'auto';
+        }
+      }, 4000);
+
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then((registration) => {
+            console.log('SW_READY: Beast AI Service Worker registered.');
+          }).catch((error) => {
+            console.error('SW_FAILURE: Service Worker registration failed.', error);
+          });
+        });
+      }
+    </script>
   </body>
 </html>
 

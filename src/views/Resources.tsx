@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.VIEW
 TAG: UI.BEAST.VIEW.RESOURCES
 
@@ -71,9 +73,27 @@ const RESOURCES = [
 ];
 
 const STUDY_MUNITIONS = [
-  { id: 'ai-900', title: 'Microsoft AI-900 Study Guide', desc: 'Condensed exam objectives and Azure AI terminology.', type: 'Booklet' },
-  { id: 'agent-man', title: 'Agent Engineering Manual', desc: 'Technical breakdown of the ReAct pattern and Tool Classes.', type: 'Manual' },
-  { id: 'leeway-std', title: 'Leeway Standard Booklet', desc: 'Definitive guide to RAG architecture and Vector memory.', type: 'Technical' }
+  {
+    id: 'ai-900',
+    title: 'Microsoft AI-900 Study Guide',
+    desc: 'Official Microsoft Azure AI Fundamentals exam preparation resources.',
+    type: 'Official',
+    url: 'https://learn.microsoft.com/credentials/certifications/resources/study-guides/ai-900'
+  },
+  {
+    id: 'agent-man',
+    title: 'AWS AI Learning Path',
+    desc: 'AWS pathway for AI engineering and certification preparation.',
+    type: 'Official',
+    url: 'https://aws.amazon.com/training/learn-about/machine-learning/'
+  },
+  {
+    id: 'leeway-std',
+    title: 'Leeway Standards Repository',
+    desc: 'Source training materials and standards documents for agent engineering.',
+    type: 'Repo',
+    url: 'https://github.com/4citeB4U/LeeWay-Standards'
+  }
 ];
 
 export const ResourceView: React.FC = () => {
@@ -91,7 +111,7 @@ export const ResourceView: React.FC = () => {
         </h2>
         <div className="grid grid-cols-1 gap-3">
           {STUDY_MUNITIONS.map(item => (
-            <Card key={item.id} className="p-4 bg-white border-2 border-black flex items-center gap-4 hover:bg-neutral-50 transition-all group cursor-pointer" onClick={() => alert(`VIEWING: ${item.title}. This manual provides high-stakes tactical theory for Mission Architects.`)}>
+            <Card key={item.id} className="p-4 bg-white border-2 border-black flex items-center gap-4 hover:bg-neutral-50 transition-all group cursor-pointer" onClick={() => window.open(item.url, '_blank')}>
               <div className="w-10 h-10 bg-neutral-100 border-2 border-black flex items-center justify-center shrink-0">
                 <FileText size={18} className="text-neutral-400 group-hover:text-black" />
               </div>
@@ -103,9 +123,9 @@ export const ResourceView: React.FC = () => {
                 <p className="text-[10px] font-bold text-neutral-500 leading-tight">{item.desc}</p>
               </div>
               <button 
-                onClick={(e) => { e.stopPropagation(); alert(`DOWNLOADING: ${item.title}.pdf`); }}
+                onClick={(e) => { e.stopPropagation(); window.open(item.url, '_blank'); }}
                 className="p-1.5 hover:bg-black hover:text-white transition-colors"
-                title="Download PDF"
+                title="Open Resource"
               >
                 <Download size={16} />
               </button>
@@ -160,7 +180,7 @@ export const ResourceView: React.FC = () => {
                         <span>DEPLOYED</span>
                     </div>
                 </div>
-                <Button size="sm" className="w-full bg-emerald-500 text-black hover:bg-emerald-400" onClick={() => alert("DOWNLOADING: Leeway_Standard_Architect_v2.4.pdf")}>
+                <Button size="sm" className="w-full bg-emerald-500 text-black hover:bg-emerald-400" onClick={() => window.open('https://github.com/4citeB4U/LeeWay-Standards', '_blank')}>
                     DOWNLOAD STANDARDS
                 </Button>
             </div>

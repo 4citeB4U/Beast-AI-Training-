@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.DASHBOARD
 TAG: UI.BEAST.DASHBOARD_ANALYTICS
 
@@ -38,6 +40,8 @@ import { useApp } from '../AppContext';
 
 export const DashboardView: React.FC<{ onNavigate: (v: any) => void }> = ({ onNavigate }) => {
   const { progress } = useApp();
+  const verifiedCerts = Object.values(progress.certificationStatus || {}).filter(status => status === 'verified').length;
+  const vmReady = !!progress.vmShowcaseUnlocked;
 
   return (
     <div className="space-y-6">
@@ -99,6 +103,29 @@ export const DashboardView: React.FC<{ onNavigate: (v: any) => void }> = ({ onNa
                     {progress.credentials?.hfUsername ? 'HUB CONNECTED' : 'MISSING AUTH'}
                 </p>
             </Card>
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h3 className="font-black text-lg italic uppercase tracking-tighter flex items-center gap-2">
+            <GraduationCap size={18} />
+            Credential + VM State
+        </h3>
+        <div className="grid grid-cols-2 gap-4">
+          <Card className="p-4 border-2 border-blue-500/40 bg-blue-500/10">
+            <p className="text-[10px] font-black uppercase text-blue-300 mb-1 tracking-widest">Verified Credentials</p>
+            <p className="text-2xl font-black text-white">{verifiedCerts}</p>
+            <button className="mt-3 text-[10px] font-black uppercase tracking-widest text-blue-300 hover:text-white" onClick={() => onNavigate('certifications')}>
+              Open Command
+            </button>
+          </Card>
+          <Card className={`p-4 border-2 ${vmReady ? 'border-emerald-500 bg-emerald-500/10' : 'border-neutral-600 bg-neutral-900/60'}`}>
+            <p className="text-[10px] font-black uppercase text-neutral-300 mb-1 tracking-widest">Agent VM</p>
+            <p className="text-sm font-black text-white">{vmReady ? 'UNLOCKED' : 'LOCKED'}</p>
+            <button className="mt-3 text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:text-emerald-300" onClick={() => onNavigate('agent-vm')}>
+              Open VM Path
+            </button>
+          </Card>
         </div>
       </section>
 

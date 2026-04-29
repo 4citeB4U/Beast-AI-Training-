@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.COMPONENT
 TAG: UI.BEAST.COMPONENT.UI
 
@@ -32,10 +34,11 @@ MIT
 */
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, type HTMLMotionProps } from 'motion/react';
 import { LucideIcon } from 'lucide-react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends HTMLMotionProps<'button'> {
+  children?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'brutal';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   icon?: LucideIcon;
@@ -50,25 +53,25 @@ export const Button: React.FC<ButtonProps> = ({
   ...props 
 }) => {
   const variants = {
-    primary: 'bg-white text-black hover:bg-neutral-200',
-    secondary: 'bg-emerald-500 text-black hover:bg-emerald-400',
-    ghost: 'bg-transparent text-white hover:bg-white/10',
-    outline: 'border border-white/20 text-white hover:bg-white/5',
-    brutal: 'bg-emerald-500 text-black font-black uppercase tracking-widest border border-white/40 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all'
+    primary: 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-500/20',
+    secondary: 'bg-white text-slate-900 border-2 border-slate-200 hover:bg-slate-50 shadow-sm',
+    ghost: 'bg-transparent text-slate-600 hover:bg-slate-100',
+    outline: 'border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50',
+    brutal: 'bg-emerald-500 text-slate-900 font-bold border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]'
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-[10px] font-black uppercase tracking-widest',
-    md: 'px-6 py-3 text-xs font-black uppercase tracking-[0.2em]',
-    lg: 'px-8 py-4 text-sm font-black uppercase tracking-[0.3em]',
-    xl: 'px-10 py-5 text-lg font-black uppercase tracking-[0.4em]'
+    sm: 'px-5 py-2.5 text-xs font-bold uppercase tracking-widest',
+    md: 'px-8 py-4 text-sm font-bold uppercase tracking-tight',
+    lg: 'px-10 py-5 text-base font-bold uppercase tracking-tight',
+    xl: 'px-12 py-6 text-xl font-bold uppercase tracking-normal'
   };
 
   return (
     <motion.button
-      whileTap={{ scale: 0.98 }}
-      whileHover={{ scale: 1.01 }}
-      className={`inline-flex items-center justify-center gap-2 rounded-none transition-all focus:outline-none ${variants[variant]} ${sizes[size]} ${className}`}
+      whileTap={{ scale: 0.96 }}
+      whileHover={{ scale: 1.03, y: -6 }}
+      className={`inline-flex items-center justify-center gap-4 rounded-full transition-all focus:outline-none ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
       {Icon && <Icon size={IconSizeMap[size]} />}
@@ -87,7 +90,7 @@ const IconSizeMap = {
 export const Card: React.FC<React.HTMLAttributes<HTMLDivElement> & { brutal?: boolean }> = ({ children, className = '', brutal, ...props }) => {
   return (
     <div 
-      className={`p-6 bg-black/40 backdrop-blur-sm ${brutal ? 'border border-white/20 shadow-[0_0_20px_rgba(0,0,0,0.5)]' : 'border border-white/5'} ${className}`}
+      className={`p-12 md:p-16 bg-white/95 backdrop-blur-3xl rounded-[4rem] border-2 border-slate-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] transition-all ${className}`}
       {...props}
     >
       {children}
@@ -97,11 +100,11 @@ export const Card: React.FC<React.HTMLAttributes<HTMLDivElement> & { brutal?: bo
 
 export const ProgressBar: React.FC<{ progress: number; className?: string }> = ({ progress, className = '' }) => {
   return (
-    <div className={`h-2 w-full bg-neutral-200 overflow-hidden ${className}`}>
+    <div className={`h-4 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200 ${className}`}>
       <motion.div 
         initial={{ width: 0 }}
         animate={{ width: `${progress}%` }}
-        className="h-full bg-emerald-500"
+        className="h-full bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"
       />
     </div>
   );

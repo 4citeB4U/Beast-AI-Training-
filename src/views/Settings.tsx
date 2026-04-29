@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.VIEW
 TAG: UI.BEAST.VIEW.SETTINGS
 
@@ -37,7 +39,7 @@ import { User, Bell, Download, Trash2, ShieldCheck, Accessibility, Github, Cpu, 
 import { useApp } from '../AppContext';
 
 export const SettingsView: React.FC = () => {
-    const { progress, updateCredentials } = useApp();
+    const { progress, updateCredentials, updatePreferences } = useApp();
     const [creds, setCreds] = useState({
         github: progress.credentials?.githubUsername || '',
         hf: progress.credentials?.hfUsername || '',
@@ -116,8 +118,19 @@ export const SettingsView: React.FC = () => {
                 <section className="space-y-3">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Preferences</h4>
                     <div className="space-y-2">
-                        <SettingRow icon={Bell} title="System Notifications" toggle />
-                        <SettingRow icon={Accessibility} title="Screen Reader Mode" toggle />
+                        <SettingRow 
+                            icon={Bell} 
+                            title="System Notifications" 
+                            toggle 
+                        />
+                        <SettingRow 
+                            icon={Accessibility} 
+                            title="Performance Mode (Lite)" 
+                            toggle 
+                            active={progress.preferences.performanceMode}
+                            onClick={() => updatePreferences({ performanceMode: !progress.preferences.performanceMode })}
+                            description="Disables heavy animations and tactical overlays for low-end devices."
+                        />
                         <SettingRow icon={ShieldCheck} title="Privacy Lockdown" active />
                     </div>
                 </section>
@@ -144,17 +157,23 @@ export const SettingsView: React.FC = () => {
     );
 };
 
-const SettingRow: React.FC<{ icon: any; title: string, toggle?: boolean, active?: boolean, danger?: boolean }> = ({ icon: Icon, title, toggle, active, danger }) => (
-    <Card className={`p-4 flex items-center justify-between border-2 border-black hover:bg-neutral-50 cursor-pointer ${danger ? 'text-red-600' : ''}`}>
+const SettingRow: React.FC<{ icon: any; title: string, toggle?: boolean, active?: boolean, danger?: boolean, onClick?: () => void, description?: string }> = ({ icon: Icon, title, toggle, active, danger, onClick, description }) => (
+    <Card 
+        className={`p-4 flex items-center justify-between border-2 border-black hover:bg-neutral-50 cursor-pointer ${danger ? 'text-red-600' : ''}`}
+        onClick={onClick}
+    >
         <div className="flex items-center gap-3">
             <Icon size={20} />
-            <span className="font-black text-xs uppercase tracking-tight">{title}</span>
+            <div className="flex flex-col">
+                <span className="font-black text-xs uppercase tracking-tight">{title}</span>
+                {description && <span className="text-[8px] font-medium text-neutral-500 uppercase tracking-wide">{description}</span>}
+            </div>
         </div>
         {toggle && (
-            <div className="w-10 h-5 bg-neutral-200 border-2 border-black relative">
-                <div className="absolute left-0 top-0 bottom-0 w-4 bg-black" />
+            <div className={`w-10 h-5 border-2 border-black relative transition-colors ${active ? 'bg-emerald-500' : 'bg-neutral-200'}`}>
+                <div className={`absolute top-0 bottom-0 w-4 bg-black transition-all ${active ? 'right-0' : 'left-0'}`} />
             </div>
         )}
-        {active && <span className="text-[10px] font-black uppercase tracking-widest bg-black text-white px-2 py-0.5">ENABLED</span>}
+        {!toggle && active && <span className="text-[10px] font-black uppercase tracking-widest bg-black text-white px-2 py-0.5">ENABLED</span>}
     </Card>
 );

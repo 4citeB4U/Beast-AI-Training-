@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.VIEW
 TAG: UI.BEAST.VIEW.LESSONPLAYER
 
@@ -37,7 +39,8 @@ import { Card, Button, ProgressBar } from '../components/UI';
 import { X, ArrowRight, Zap, CheckCircle2, Bot, Printer, Volume2, VolumeX, Terminal, Loader2, LayoutGrid, ListOrdered, Copy, Check, ExternalLink, PlayCircle, GraduationCap } from 'lucide-react';
 import { Lesson, StepType } from '../types';
 import { useApp } from '../AppContext';
-import { workshopResponse, generateSpeech } from '../services/ai';
+import { workshopResponse, generateSpeech, generateAgentLeeNarration } from '../services/ai';
+import { ProctorSession } from '../components/ProctorSession';
 
 export const LessonPlayerView: React.FC<{
   lesson: Lesson;
@@ -66,7 +69,17 @@ export const LessonPlayerView: React.FC<{
     }
     
     setIsSynthesizing(true);
-    const base64Audio = await generateSpeech(text);
+    const narratorContext = [
+      `Program: BEAST AI Learning`,
+      `Learner Level: ${progress.level || 'beginner'}`,
+      `Current Lesson: ${lesson.title}`,
+      `Current Step: ${currentStep?.title || 'Narration'}`,
+      `Narration Mode: On`,
+      `Voice Requirement: Match Agent Lee chat persona exactly`
+    ].join('\n');
+
+    const agentLeeScript = await generateAgentLeeNarration(text, narratorContext);
+    const base64Audio = await generateSpeech(agentLeeScript);
     
     if (base64Audio) {
       const audioUrl = `data:audio/wav;base64,${base64Audio}`;
@@ -78,7 +91,7 @@ export const LessonPlayerView: React.FC<{
     } else {
         setIsSynthesizing(false);
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
+        const utterance = new SpeechSynthesisUtterance(agentLeeScript);
         window.speechSynthesis.speak(utterance);
     }
   };
@@ -149,8 +162,8 @@ export const LessonPlayerView: React.FC<{
       </header>
 
       {/* Content Area */}
-      <main className="flex-1 flex flex-col items-center p-6 bg-neutral-50 overflow-y-auto print:bg-white print:p-0">
-        <div className="w-full max-w-sm space-y-8 flex-1 flex flex-col justify-center">
+      <main className="flex-1 flex flex-col items-center p-4 md:p-6 bg-neutral-50 overflow-y-auto print:bg-white print:p-0">
+        <div className={`w-full ${currentStep.embeddedContent ? 'max-w-5xl' : 'max-w-sm'} space-y-6 md:space-y-8 flex-1 flex flex-col justify-center`}>
             <AnimatePresence mode="wait">
             <motion.div
                 key={currentStepIndex}
@@ -159,7 +172,8 @@ export const LessonPlayerView: React.FC<{
                 exit={{ opacity: 0, y: -10 }}
                 className="w-full"
             >
-                <div className="mb-6 flex justify-center">
+                <div className="mb-6 flex flex-col gap-4 justify-center">
+                    {currentStep.proctoringRequired && <ProctorSession isExam={lesson.isCertificationCourse} />}
                     <ProctorFeedback step={currentStep} answer={interactionAnswer} />
                 </div>
                 <StepRenderer 
@@ -273,7 +287,7 @@ const ExternalLinkStep: React.FC<{ step: any }> = ({ step }) => {
     const Icon = isCert ? GraduationCap : ExternalLink;
 
     return (
-        <div className="space-y-8 text-center">
+        <div className="space-y-8 text-center w-full max-w-4xl mx-auto">
             <div className={`mx-auto w-20 h-20 flex items-center justify-center border-4 border-black ${isCert ? 'bg-emerald-500 rotate-3' : 'bg-blue-400 -rotate-3'} shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]`}>
                 <Icon size={40} className="text-white" />
             </div>
@@ -283,17 +297,25 @@ const ExternalLinkStep: React.FC<{ step: any }> = ({ step }) => {
                 <p className="text-neutral-600 font-bold leading-relaxed px-4">{step.content}</p>
             </div>
 
-            <Button 
-                variant="primary" 
-                className="w-full max-w-xs mx-auto py-5 justify-center gap-3"
-                onClick={() => window.open(step.externalUrl, '_blank')}
-            >
-                <span className="font-black tracking-widest">{isCert ? 'CLAIM CREDENTIALS' : 'OPEN OFFICIAL LAB'}</span>
-                <ExternalLink size={20} />
-            </Button>
+            {step.embeddedContent ? (
+                <Card brutal className="w-full bg-white p-0 overflow-hidden border-4 border-black min-h-[400px] md:min-h-[600px]">
+                    <div dangerouslySetInnerHTML={{ __html: step.embeddedContent }} className="w-full h-full" />
+                </Card>
+            ) : (
+                <Button 
+                    variant="primary" 
+                    className="w-full max-w-xs mx-auto py-5 justify-center gap-3"
+                    onClick={() => window.open(step.externalUrl, '_blank')}
+                >
+                    <span className="font-black tracking-widest">{isCert ? 'CLAIM CREDENTIALS' : 'OPEN OFFICIAL LAB'}</span>
+                    <ExternalLink size={20} />
+                </Button>
+            )}
 
             <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400 italic">
-                This will open the official {isCert ? 'certification' : 'lab'} site in a new tab.
+                {step.embeddedContent 
+                    ? 'Official training module embedded via Leeway Proctoring Secure Stream'
+                    : `This will open the official ${isCert ? 'certification' : 'lab'} site in a new tab.`}
             </p>
         </div>
     );

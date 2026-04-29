@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.VIEW
 TAG: UI.BEAST.VIEW.LIBRARY
 
@@ -50,7 +52,7 @@ export const LibraryView: React.FC<{
     <div className="space-y-6">
       <section className="flex justify-between items-end">
         <div>
-           <h1 className="text-3xl font-black italic tracking-tighter uppercase">COURSE LAB.</h1>
+           <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">Course Library.</h1>
            <p className="text-neutral-500 font-medium italic">Your personalized sector: {filterLevel}</p>
         </div>
         <div className="flex gap-1">
@@ -96,7 +98,7 @@ export const LibraryView: React.FC<{
               </div>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {course.modules.map(module => (
                 <Card key={module.id} className="p-4 flex flex-col gap-4 border-2 border-black hover:bg-neutral-50 transition-colors">
                   <div className="flex justify-between items-start">

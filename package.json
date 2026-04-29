@@ -17,6 +17,7 @@
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "idb": "^8.0.3",
+    "leeway-edge-rtc": "git+https://github.com/4citeB4U/LeeWay-Edge-RTC.git",
     "leeway-sdk": "file:LeeWay-Standards",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",

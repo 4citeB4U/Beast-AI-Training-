@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.UNKNOWN
 TAG: UI.BEAST.UNKNOWN
 
@@ -38,41 +40,61 @@ import './index.css';
 import { agentLeeRuntimeBootstrap } from 'leeway-sdk/src/core/AgentLeeRuntimeBootstrap';
 
 const boot = async () => {
+  const root = document.getElementById('root');
   const splash = document.getElementById('splash-screen');
   
-  try {
-    // Activate Leeway SDK Runtime
-    await agentLeeRuntimeBootstrap.initialize();
-    
-    // Slight delay for smoothness
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    if (splash) {
-      splash.style.opacity = '0';
-      splash.style.visibility = 'hidden';
-      document.body.style.overflow = 'auto';
-    }
-  } catch (error) {
-    console.error('LEEWAY_BOOT_FAILURE: System integrity compromised.', error);
-    const bootText = document.querySelector('.boot-text');
-    if (bootText) {
-      bootText.textContent = 'INTEGRITY_BREACH: SYSTEM_HALTED';
-      bootText.style.color = '#ef4444';
-    }
-    return; // Don't render if core fails
-  }
-  
-  createRoot(document.getElementById('root')!).render(
+  if (!root) return;
+
+  // 1. Initial Render (Immediate)
+  const rootElement = createRoot(root);
+  rootElement.render(
     <StrictMode>
       <App />
     </StrictMode>,
   );
+
+  // 2. Visual Turbo-Handoff
+  // Hide splash as soon as React has painted the first frame
+  const hideSplash = () => {
+    if (splash) {
+      (splash as HTMLElement).style.opacity = '0';
+      (splash as HTMLElement).style.visibility = 'hidden';
+      document.body.style.overflow = 'auto';
+    }
+  };
+
+  // Fail-safe: Hide splash screen after 3s regardless of paint
+  const failSafe = setTimeout(hideSplash, 3000);
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      clearTimeout(failSafe);
+      hideSplash();
+    }, 400); // Small delay to ensure App shell is visible
+  });
+
+  // 3. Background SDK Establishment (Non-blocking)
+  const initializeSDK = async () => {
+    try {
+      // Set performance mode from persistence
+      const saved = localStorage.getItem('beast_ai_progress');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.preferences?.performanceMode) {
+          agentLeeRuntimeBootstrap.setLiteMode(true);
+        }
+      }
+
+      // Initialize Leeway SDK in the background
+      await agentLeeRuntimeBootstrap.initialize();
+      console.log('✅ LEEWAY_CORE: System integrity verified.');
+    } catch (error) {
+      console.warn('⚠️ LEEWAY_CORE: System degradation detected.', error);
+    }
+  };
+
+  // Run SDK init without blocking the UI
+  initializeSDK();
 };
 
 boot();
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js');
-  });
-}

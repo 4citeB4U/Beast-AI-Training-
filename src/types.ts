@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: CORE.BEAST.TYPES
 TAG: CORE.BEAST.SCHEMA
 
@@ -55,6 +57,8 @@ export interface LessonStep {
   };
   narration?: string;
   printableContent?: string;
+  embeddedContent?: string; // HTML or iframe string for in-app training
+  proctoringRequired?: boolean; // If true, show ProctorSession
 }
 
 export interface Lesson {
@@ -86,7 +90,26 @@ export interface Course {
   isCertificationCourse?: boolean;
 }
 
+export type CertificationStatus = 'not-started' | 'in-progress' | 'submitted' | 'verified';
+
+export interface CertificationProgram {
+  id: string;
+  provider: 'Microsoft' | 'AWS' | 'Google';
+  title: string;
+  examCode?: string;
+  officialUrl: string;
+  track: 'foundation' | 'advanced';
+}
+
 export type UserLevel = 'beginner' | 'builder' | 'engineer';
+
+export interface Badge {
+  id: string;
+  name: string;
+  unlock: string;
+  category: 'identity' | 'path' | 'agent' | 'certification';
+  icon: string;
+}
 
 export interface UserProgress {
   streak: number;
@@ -99,8 +122,15 @@ export interface UserProgress {
   preferences: {
     narrationEnabled: boolean;
     autoAdvance: boolean;
+    performanceMode?: boolean; // Disables heavy animations and effects
   };
   credentials?: {
+    // OAuth credentials
+    oauthProvider?: 'github' | 'discord' | 'huggingface' | 'google';
+    oauthUsername?: string;
+    oauthEmail?: string;
+    oauthUserId?: string;
+    // Legacy credentials (deprecated)
     githubUsername?: string;
     hfUsername?: string;
     discordUsername?: string;
@@ -112,4 +142,7 @@ export interface UserProgress {
     timestamp: string;
     aiResponse?: string;
   }[];
+  certificationStatus?: Record<string, CertificationStatus>;
+  vmShowcaseUnlocked?: boolean;
+  activeBadgeId?: string;
 }

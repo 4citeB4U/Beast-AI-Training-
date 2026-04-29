@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.VIEW
 TAG: UI.BEAST.VIEW.ONBOARDING
 
@@ -37,12 +39,14 @@ import { useApp } from '../AppContext';
 import { motion } from 'motion/react';
 import { Zap, Target, Cpu, Rocket } from 'lucide-react';
 import { UserLevel } from '../types';
+import { OAuthLogin } from '../components/OAuthLogin';
+import type { OAuthAccount } from '../services/oauth';
 
 export const OnboardingView: React.FC = () => {
   const { setOnboarding, updateCredentials } = useApp();
   const [step, setStep] = useState(0);
   const [selectedLevel, setSelectedLevel] = useState<UserLevel | null>(null);
-  const [creds, setCreds] = useState({ github: '', hf: '', discord: '' });
+  const [oauthAccount, setOauthAccount] = useState<OAuthAccount | null>(null);
 
   const levels = [
     { 
@@ -73,14 +77,16 @@ export const OnboardingView: React.FC = () => {
     setStep(2);
   };
 
-  const handleFinish = () => {
+  const handleOAuthSuccess = (account: OAuthAccount) => {
+    setOauthAccount(account);
     if (selectedLevel) {
-        updateCredentials({
-            githubUsername: creds.github,
-            hfUsername: creds.hf,
-            discordUsername: creds.discord
-        });
-        setOnboarding(selectedLevel);
+      updateCredentials({
+        oauthProvider: account.provider,
+        oauthUsername: account.username,
+        oauthEmail: account.email,
+        oauthUserId: account.userId,
+      });
+      setOnboarding(selectedLevel);
     }
   };
 
@@ -141,66 +147,11 @@ export const OnboardingView: React.FC = () => {
         </motion.div>
       )}
 
-      {step === 2 && (
-        <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="space-y-8 w-full max-w-sm text-left"
-        >
-            <div className="space-y-2 text-center">
-                <h2 className="text-3xl font-black italic uppercase tracking-tighter">Armory Registration</h2>
-                <p className="font-bold text-neutral-400 uppercase tracking-widest text-xs">Verify your developer identity</p>
-            </div>
-
-            <div className="space-y-4">
-                <div className="p-4 bg-white border-2 border-black space-y-4">
-                    <div className="space-y-4">
-                        <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-1">GitHub Username</label>
-                            <input 
-                                type="text" 
-                                value={creds.github}
-                                onChange={(e) => setCreds(prev => ({ ...prev, github: e.target.value }))}
-                                placeholder="e.g. beast-dev"
-                                className="w-full border-2 border-black p-2 text-xs font-bold focus:outline-none focus:bg-emerald-50"
-                            />
-                        </div>
-                        <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-1">HuggingFace ID</label>
-                            <input 
-                                type="text"
-                                value={creds.hf}
-                                onChange={(e) => setCreds(prev => ({ ...prev, hf: e.target.value }))}
-                                placeholder="e.g. hf_expert_22"
-                                className="w-full border-2 border-black p-2 text-xs font-bold focus:outline-none focus:bg-emerald-50"
-                            />
-                        </div>
-                        <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-1">Discord Handle</label>
-                            <input 
-                                type="text"
-                                value={creds.discord}
-                                onChange={(e) => setCreds(prev => ({ ...prev, discord: e.target.value }))}
-                                placeholder="e.g. beast#1234"
-                                className="w-full border-2 border-black p-2 text-xs font-bold focus:outline-none focus:bg-emerald-50"
-                            />
-                        </div>
-                    </div>
-                </div>
-                
-                <div className="p-4 bg-black text-white space-y-2">
-                    <p className="text-xs font-black uppercase tracking-widest text-emerald-400">Collaborator Auth</p>
-                    <p className="text-[10px] font-bold leading-relaxed">
-                        Setting your path as <span className="text-emerald-500 uppercase">{selectedLevel}</span>. 
-                        Credential mapping is required for pull/push operations and collaborator status in advanced modules.
-                    </p>
-                </div>
-
-                <Button size="xl" variant="brutal" className="w-full bg-emerald-500" onClick={handleFinish}>
-                    INITIALIZE CURRICULUM
-                </Button>
-            </div>
-        </motion.div>
+      {step === 2 && selectedLevel && (
+        <OAuthLogin 
+          onSuccess={handleOAuthSuccess}
+          selectedLevel={selectedLevel}
+        />
       )}
     </div>
   );

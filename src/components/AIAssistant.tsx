@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.ASSISTANT
 TAG: AI.BEAST.ASSISTANT_UI
 
@@ -35,8 +37,18 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Bot, X, Send, Loader2, Mic, Settings2 } from 'lucide-react';
 import { askAssistant, generateSpeech, subscribeToAgentEvents, startVoiceSession, stopVoiceSession } from '../services/ai';
 import { Card, Button } from './UI';
+import { useApp } from '../AppContext';
+import { COURSES } from '../data';
+import { VoiceService } from 'leeway-sdk/src/core/VoiceService';
+
+const QUICK_PROMPTS = [
+  'Career Plan',
+  'Cert Roadmap',
+  'Show Me Tool Calling'
+];
 
 export const AIAssistant: React.FC = () => {
+  const { progress } = useApp();
   const [isOpen, setIsOpen] = useState(false);
   const [isLive, setIsLive] = useState(false);
   const [isSynthesizing, setIsSynthesizing] = useState(false);
@@ -46,6 +58,24 @@ export const AIAssistant: React.FC = () => {
   const [activeAgents, setActiveAgents] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  const learnerContext = React.useMemo(() => {
+    const level = progress.level || 'beginner';
+    const recommendedCourse = COURSES.find(c => c.targetLevel === level) || COURSES[0];
+    const verifiedCerts = Object.values(progress.certificationStatus || {}).filter(status => status === 'verified').length;
+
+    return [
+      `Program: BEAST AI Learning`,
+      `Learner Level: ${level}`,
+      `Current Mission: ${recommendedCourse?.title || 'Mission 0'}`,
+      `Completed Lessons: ${progress.completedLessonIds.length}`,
+      `XP: ${progress.xp}`,
+      `Certification Verifications: ${verifiedCerts}`,
+      `Agent VM Unlocked: ${progress.vmShowcaseUnlocked ? 'yes' : 'no'}`,
+      `Guidance Scope: Course coaching, career advising, coding and tool-calling examples`,
+      `Leeway Baseline Autonomy: 70% load by standards core, 80% power with low agent duty, 90% with full agent orchestration`
+    ].join('\n');
+  }, [progress]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -110,19 +140,16 @@ export const AIAssistant: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await askAssistant(textToSend, "Leeway Academy Curriculum Context");
+      const response = await askAssistant(textToSend, learnerContext);
       const assistantMsg = { role: 'assistant' as const, text: response || "I'm sorry, I couldn't process that." };
       setMessages(prev => [...prev, assistantMsg]);
       
       if (isLive) {
         setIsSynthesizing(true);
-        const base64Audio = await generateSpeech(assistantMsg.text);
-        if (base64Audio) {
-            const audio = new Audio(`data:audio/wav;base64,${base64Audio}`);
-            audio.onended = () => setIsSynthesizing(false);
-            audio.play();
-        } else {
-            setIsSynthesizing(false);
+        try {
+          await VoiceService.speak({ text: assistantMsg.text });
+        } finally {
+          setIsSynthesizing(false);
         }
       }
     } catch (error) {
@@ -145,9 +172,10 @@ export const AIAssistant: React.FC = () => {
     <>
       <button 
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-black text-white border-2 border-emerald-500 rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all z-40"
+        className="fixed bottom-28 right-8 w-20 h-20 bg-emerald-600 text-white border-4 border-white shadow-2xl rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40 group"
       >
-        <Bot size={28} />
+        <div className="absolute inset-0 bg-emerald-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
+        <Bot size={32} className="relative z-10" />
       </button>
 
       <AnimatePresence>
@@ -156,12 +184,12 @@ export const AIAssistant: React.FC = () => {
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
-            className="fixed inset-x-6 bottom-6 top-24 bg-white border-4 border-black z-50 flex flex-col md:max-w-sm md:left-auto md:right-6"
+            className="fixed inset-x-6 bottom-8 top-24 bg-white/95 backdrop-blur-3xl border border-slate-200 rounded-[3.5rem] shadow-[0_20px_70px_rgba(0,0,0,0.15)] z-50 flex flex-col md:max-w-md md:left-auto md:right-8 overflow-hidden"
           >
-            <header className="p-4 border-b-2 border-black flex items-center justify-between bg-emerald-500 shadow-[0_4px_10px_rgba(16,185,129,0.3)]">
+            <header className="p-8 border-b border-slate-100 flex items-center justify-between bg-emerald-600">
               <div className="flex flex-col -space-y-1">
-                <span className="font-black text-sm italic tracking-tighter text-black">BEAST ARCHITECT</span>
-                <span className="text-[7px] font-black tracking-widest text-black/60 uppercase">Powered by Leeway Innovations</span>
+                <span className="font-black text-lg italic tracking-tighter text-white">AGENT LEE</span>
+                <span className="text-[8px] font-bold tracking-[0.2em] text-white/60 uppercase">Academy Intelligence Core</span>
               </div>
               <div className="flex items-center gap-2">
                 <button 
@@ -192,23 +220,36 @@ export const AIAssistant: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-neutral-900 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-slate-50/50 custom-scrollbar">
               {messages.length === 0 && (
-                <p className="text-center text-xs font-black text-neutral-400 mt-12 uppercase tracking-widest">
-                  Initial uplink established. Ask any course-related question.
-                </p>
+                <div className="space-y-8 mt-10">
+                  <p className="text-center text-sm font-medium text-slate-400 leading-relaxed">
+                    Agent Lee is active. Ask for step-by-step guidance on courses, career development, or AI engineering.
+                  </p>
+                  <div className="grid grid-cols-1 gap-3">
+                    {QUICK_PROMPTS.map((prompt) => (
+                      <button
+                        key={prompt}
+                        onClick={() => handleSend(prompt)}
+                        className="w-full text-left px-6 py-4 text-xs font-bold uppercase tracking-widest bg-white text-emerald-700 border border-slate-200 rounded-2xl hover:bg-emerald-50 hover:border-emerald-200 transition-all shadow-sm"
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <Card className={`max-w-[80%] p-3 text-xs font-bold ${msg.role === 'user' ? 'bg-black text-white' : 'bg-white border-2 border-black text-black'}`}>
+                  <Card className={`max-w-[85%] p-6 text-sm font-medium leading-relaxed ${msg.role === 'user' ? 'bg-emerald-600 text-white rounded-tr-none' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none'}`}>
                     {msg.text}
                   </Card>
                 </div>
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="p-3 bg-white border-2 border-black animate-pulse">
-                    <Loader2 size={16} className="animate-spin" />
+                  <div className="p-4 bg-white border border-slate-200 rounded-full shadow-sm animate-pulse">
+                    <Loader2 size={20} className="animate-spin text-emerald-600" />
                   </div>
                 </div>
               )}

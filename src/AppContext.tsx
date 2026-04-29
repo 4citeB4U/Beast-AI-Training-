@@ -1,6 +1,8 @@
 /*
 LEEWAY HEADER — DO NOT REMOVE
 
+DISCOVERY_PIPELINE: Voice → Intent → Location → Vertical → Ranking → Render
+
 REGION: PRODUCT.BEAST.UNKNOWN
 TAG: UI.BEAST.UNKNOWN
 
@@ -32,7 +34,7 @@ MIT
 */
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { UserProgress } from './types';
+import { CertificationStatus, UserProgress } from './types';
 
 interface AppContextType {
   progress: UserProgress;
@@ -42,6 +44,9 @@ interface AppContextType {
   updatePreferences: (prefs: Partial<UserProgress['preferences']>) => void;
   updateCredentials: (creds: Partial<NonNullable<UserProgress['credentials']>>) => void;
   addFeedback: (rating: number, comment: string, aiResponse: string) => void;
+  updateCertificationStatus: (certId: string, status: CertificationStatus) => void;
+  unlockVmShowcase: () => void;
+  setActiveBadge: (badgeId: string) => void;
 }
 
 const defaultProgress: UserProgress = {
@@ -54,7 +59,10 @@ const defaultProgress: UserProgress = {
   preferences: {
     narrationEnabled: true,
     autoAdvance: false,
-  }
+    performanceMode: false,
+  },
+  certificationStatus: {},
+  vmShowcaseUnlocked: false
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -64,11 +72,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const saved = localStorage.getItem('beast_ai_progress');
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Migrate old users
-      if (parsed.hasOnboarded === undefined) {
-        return { ...defaultProgress, ...parsed, hasOnboarded: false };
-      }
-      return parsed;
+      return {
+        ...defaultProgress,
+        ...parsed,
+        preferences: {
+          ...defaultProgress.preferences,
+          ...(parsed.preferences || {}),
+        },
+        certificationStatus: {
+          ...(parsed.certificationStatus || {}),
+        },
+      };
     }
     return defaultProgress;
   });
@@ -139,8 +153,35 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
   };
 
+  const updateCertificationStatus = (certId: string, status: CertificationStatus) => {
+    setProgress(prev => ({
+      ...prev,
+      certificationStatus: {
+        ...(prev.certificationStatus || {}),
+        [certId]: status,
+      },
+      lastSync: new Date().toISOString(),
+    }));
+  };
+
+  const unlockVmShowcase = () => {
+    setProgress(prev => ({
+      ...prev,
+      vmShowcaseUnlocked: true,
+      lastSync: new Date().toISOString(),
+    }));
+  };
+
+  const setActiveBadge = (badgeId: string) => {
+    setProgress(prev => ({
+      ...prev,
+      activeBadgeId: badgeId,
+      lastSync: new Date().toISOString(),
+    }));
+  };
+
   return (
-    <AppContext.Provider value={{ progress, completeLesson, unlockBadge, setOnboarding, updatePreferences, updateCredentials, addFeedback }}>
+    <AppContext.Provider value={{ progress, completeLesson, unlockBadge, setOnboarding, updatePreferences, updateCredentials, addFeedback, updateCertificationStatus, unlockVmShowcase, setActiveBadge }}>
       {children}
     </AppContext.Provider>
   );
