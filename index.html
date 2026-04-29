@@ -4,14 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BEAST AI Academy | Powered by Leeway Innovations</title>
-    <base href="/Beast-AI-Training-/">
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="/manifest.json" />
     <style>
-      body { margin: 0; background: #0a0a0a; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+      body { margin: 0; background: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
       #splash-screen {
         position: fixed;
         inset: 0;
-        background: #000;
+        background: #fff;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -34,30 +33,31 @@
         align-items: center;
         justify-content: center;
         gap: 0.15rem;
-        color: #fff;
+        color: #0f172a;
       }
-      .boot-logo span { color: #10b981; }
+      .boot-logo span { color: #059669; }
       .boot-subtitle {
         font-size: 7px;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.25em;
-        color: #525252;
+        color: #94a3b8;
         margin-bottom: 1.25rem;
       }
       .boot-bar {
         height: 2px;
         width: 100%;
-        background: #262626;
+        background: #e2e8f0;
         position: relative;
         overflow: hidden;
+        border-radius: 99px;
       }
       .boot-progress {
         position: absolute;
         height: 100%;
         width: 0%;
-        background: #10b981;
-        box-shadow: 0 0 10px #10b981;
+        background: #059669;
+        box-shadow: 0 0 10px rgba(5, 150, 105, 0.3);
         animation: progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
       }
       .boot-text {
@@ -66,26 +66,17 @@
         text-transform: uppercase;
         letter-spacing: 0.3em;
         margin-top: 1rem;
-        color: #525252;
+        color: #94a3b8;
       }
       @keyframes progress {
         0% { width: 0%; left: 0%; }
         50% { width: 50%; left: 25%; }
         100% { width: 0%; left: 100%; }
       }
-      .scanline {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.3) 51%);
-        background-size: 100% 4px;
-        pointer-events: none;
-        opacity: 0.1;
-      }
     </style>
   </head>
   <body>
     <div id="splash-screen">
-      <div class="scanline"></div>
       <div class="boot-container">
         <div class="boot-logo">BEAST<span>AI</span></div>
         <div class="boot-subtitle">Powered by Leeway Innovations</div>
@@ -96,23 +87,12 @@
       </div>
     </div>
     <div id="root"></div>
-    <script type="module" src="./src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
     <script>
-      // HARD FAIL-SAFE: If the main bundle doesn't load within 4s, hide the splash anyway.
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if (splash && getComputedStyle(splash).opacity !== '0') {
-          console.warn('HARD_FAIL_SAFE: Hiding splash screen via inline script.');
-          splash.style.opacity = '0';
-          splash.style.visibility = 'hidden';
-          document.body.style.overflow = 'auto';
-        }
-      }, 4000);
-
       // Register Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js').then((registration) => {
+          navigator.serviceWorker.register('/sw.js').then((registration) => {
             console.log('SW_READY: Beast AI Service Worker registered.');
           }).catch((error) => {
             console.error('SW_FAILURE: Service Worker registration failed.', error);
@@ -122,4 +102,3 @@
     </script>
   </body>
 </html>
-
