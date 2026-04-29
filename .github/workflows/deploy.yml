@@ -14,20 +14,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Normalize git URL protocol for CI
-        run: |
-          git config --global url."https://github.com/".insteadOf "git@github.com:"
-          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
 
       - name: Install and Build
         env:
           GIT_TERMINAL_PROMPT: 0
         run: |
           node -e "const fs=require('fs'); const p='package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); if (j.dependencies && j.dependencies['leeway-edge-rtc']) { delete j.dependencies['leeway-edge-rtc']; fs.writeFileSync(p, JSON.stringify(j, null, 2)+'\\n'); console.log('Removed root leeway-edge-rtc for CI build.'); }"
-          node -e "const fs=require('fs'); const p='LeeWay-Standards/package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); if (j.dependencies && j.dependencies['leeway-edge-rtc']) { delete j.dependencies['leeway-edge-rtc']; fs.writeFileSync(p, JSON.stringify(j, null, 2)+'\\n'); console.log('Removed leeway-sdk leeway-edge-rtc for CI build.'); }"
           npm install
           npm run build
 
