@@ -39,6 +39,19 @@ import App from './App.tsx';
 import './index.css';
 import { agentLeeRuntimeBootstrap } from 'leeway-sdk/src/core/AgentLeeRuntimeBootstrap';
 
+const registerServiceWorker = () => {
+  if (!('serviceWorker' in navigator)) return;
+
+  window.addEventListener('load', () => {
+    const swUrl = `${import.meta.env.BASE_URL}sw.js`;
+    navigator.serviceWorker.register(swUrl).then(() => {
+      console.log('SW_READY: Beast AI Service Worker registered.');
+    }).catch((error) => {
+      console.error('SW_FAILURE: Service Worker registration failed.', error);
+    });
+  });
+};
+
 const boot = async () => {
   const root = document.getElementById('root');
   const splash = document.getElementById('splash-screen');
@@ -97,4 +110,5 @@ const boot = async () => {
   initializeSDK();
 };
 
+registerServiceWorker();
 boot();

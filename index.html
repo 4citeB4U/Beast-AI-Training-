@@ -68,6 +68,30 @@
         margin-top: 1rem;
         color: #94a3b8;
       }
+      #boot-fallback {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: #ffffff;
+        color: #0f172a;
+        z-index: 99;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        font-family: Inter, sans-serif;
+      }
+      #boot-fallback .title {
+        font-size: 1rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+      }
+      #boot-fallback .subtitle {
+        font-size: 0.9rem;
+        color: #475569;
+        max-width: 42ch;
+        line-height: 1.5;
+      }
       @keyframes progress {
         0% { width: 0%; left: 0%; }
         50% { width: 50%; left: 25%; }
@@ -86,19 +110,34 @@
         <div class="boot-text">Initializing Leeway SDK...</div>
       </div>
     </div>
+    <div id="boot-fallback" role="alert" aria-live="polite">
+      <div>
+        <div class="title">Boot timeout reached</div>
+        <div class="subtitle">The app is taking too long to start. This usually means the deployment is serving source files instead of the production build.</div>
+      </div>
+    </div>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Register Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').then((registration) => {
-            console.log('SW_READY: Beast AI Service Worker registered.');
-          }).catch((error) => {
-            console.error('SW_FAILURE: Service Worker registration failed.', error);
-          });
-        });
-      }
+      (() => {
+        const timeoutMs = 5000;
+        setTimeout(() => {
+          const root = document.getElementById('root');
+          const splash = document.getElementById('splash-screen');
+          const fallback = document.getElementById('boot-fallback');
+          const appMounted = !!root && root.childElementCount > 0;
+
+          if (!appMounted) {
+            if (splash) {
+              splash.style.opacity = '0';
+              splash.style.visibility = 'hidden';
+            }
+            if (fallback) {
+              fallback.style.display = 'flex';
+            }
+          }
+        }, timeoutMs);
+      })();
     </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
