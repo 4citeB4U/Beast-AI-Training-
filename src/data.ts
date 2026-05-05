@@ -37,104 +37,179 @@ import { CertificationProgram, Course, UserLevel, Badge } from './types';
 
 export const CURRICULUM = {
   beginner: {
-    startCourse: 'ai-900-track',
-    focus: 'AI Fundamentals & Azure Ecosystem'
+    startCourse: 'azure-ai-900',
+    focus: 'Microsoft Azure AI fundamentals with weekly milestones and exam-readiness labs'
   },
   builder: {
-    startCourse: 'gen-ai-beginners',
-    focus: 'Generative AI & LLM Applications'
+    startCourse: 'microsoft-genai-agent-engineering',
+    focus: 'Microsoft-aligned agent engineering, evaluation loops, and deployment artifacts'
   },
   engineer: {
-    startCourse: 'google-ai-pro',
-    focus: 'Professional AI Engineering & GCP'
+    startCourse: 'leeway-standards-engineer',
+    focus: 'Leeway standards, multi-agent orchestration, and Agent VM operations'
   }
 };
 
 export const COURSES: Course[] = [
   {
-    id: 'ai-900-track',
-    title: 'Azure AI Fundamentals (AI-900)',
-    description: 'Official Microsoft prep for the Azure AI Fundamentals certification. Covering AI workloads, ML on Azure, and Generative AI basics.',
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop', // Azure-blue high-tech
+    id: 'azure-ai-900',
+    title: 'Microsoft Azure AI Fundamentals (AI-900)',
+    description: 'Dedicated Microsoft Azure path rebuilt as an in-platform experience with weekly milestones, labs, and project checks.',
+    image: 'assets/cert.png',
     targetLevel: 'beginner',
     expectations: [
-      'Master AI-900 exam objectives',
-      'Understand Azure AI services (Computer Vision, NLP)',
-      'Prepare for official Microsoft certification'
+      'Master AI-900 domains: AI workloads, ML principles, NLP, vision, and responsible AI',
+      'Execute Azure-style hands-on simulations inside the app',
+      'Produce an exam-ready capstone and portfolio evidence'
     ],
-    outcome: 'Ready to pass the AI-900 certification exam with verified Microsoft Learn progress.',
+    outcome: 'Learner can explain and apply Azure AI fundamentals and complete AI-900 preparation through in-app labs.',
+    isCertificationCourse: true,
     modules: [
       {
-        id: 'ms-ai-900-m1',
-        title: 'Introduction to AI in Azure',
-        description: 'Self-paced course introducing AI workloads and Azure AI services.',
-        outcome: 'Foundational understanding of Azure AI capabilities.',
+        id: 'az-w1',
+        title: 'Week 1: AI Workloads and Responsible AI',
+        description: 'Foundation week with domain mapping and governance checkpoints.',
+        outcome: 'Can classify business scenarios by the correct AI workload and ethics constraints.',
         lessons: [
           {
-            id: 'ai-900-intro',
-            title: 'AI Fundamentals Overview',
-            description: 'Course AI-900T00-A: Official Microsoft Introduction.',
-            duration: '15m',
-            steps: [
-              {
-                type: 'video',
-                title: 'Azure AI Fundamentals 2024 Prep',
-                content: 'Full walkthrough of the AI-900 certification objectives by freeCodeCamp.',
-                videoUrl: 'hHjmr_YOqnU'
-              },
-              {
-                type: 'cert',
-                title: 'Microsoft Learn: AI-900 Path',
-                content: 'Access the official prep path for the Azure AI Fundamentals exam.',
-                externalUrl: 'https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'gen-ai-beginners',
-    title: 'Generative AI for Beginners',
-    description: '18-lesson free course from Microsoft covering LLMs, agents, and building generative AI applications.',
-    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop', // Generative AI / Brain
-    targetLevel: 'builder',
-    expectations: [
-      'Understand LLM architectures',
-      'Build AI agents with planning and execution',
-      'Master prompt engineering and fine-tuning'
-    ],
-    outcome: 'A full portfolio of generative AI projects including functional autonomous agents.',
-    modules: [
-      {
-        id: 'ms-gen-ai-m1',
-        title: 'LLMs & AI Agents',
-        description: 'Building the intelligence layer using Microsoft standards.',
-        outcome: 'Functional AI agents capable of multi-step reasoning.',
-        lessons: [
-          {
-            id: 'ms-agents-lesson',
-            title: 'AI Agents: Planning & Execution',
-            description: 'Microsoft 18-module curriculum focus on agentic workflows.',
-            duration: '25m',
+            id: 'az-w1-l1',
+            title: 'AI Workload Selection Matrix',
+            description: 'Map scenarios to conversational AI, vision AI, or decision AI.',
+            duration: '22m',
             steps: [
               {
                 type: 'teach',
-                title: 'Agentic Architectures',
-                content: 'Agents use LLMs to make decisions, use tools, and complete multi-step goals. We follow the Microsoft Generative AI for Beginners curriculum.'
+                title: 'Azure AI Workload Spectrum',
+                content: 'Understand conversational AI, machine learning, computer vision, and knowledge mining in an Azure context.'
               },
               {
-                type: 'video',
-                title: 'Microsoft Azure AI Fundamentals Intro',
-                content: 'Official session on Azure AI with hands-on labs.',
-                videoUrl: 'euwJLq-HD4o'
+                type: 'interaction',
+                title: 'Workload Decision Drill',
+                content: 'A healthcare triage assistant must classify urgent and non-urgent messages. Which path starts the design?',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: ['NLP classification + policy escalation', 'Only OCR extraction', 'Image object detection', 'No model, manual tags'],
+                  correctIndex: 1,
+                }
+              },
+              {
+                type: 'sorting',
+                title: 'Responsible AI Sequence',
+                content: 'Order the governance loop for safe AI delivery.',
+                interaction: {
+                  type: 'sorting',
+                  items: ['Define Harm Risks', 'Set Guardrails', 'Evaluate Outputs', 'Monitor Drift'],
+                  correctItems: ['Define Harm Risks', 'Set Guardrails', 'Evaluate Outputs', 'Monitor Drift'],
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'az-w2',
+        title: 'Week 2: Machine Learning Concepts',
+        description: 'Model lifecycle, training/validation intuition, and metric interpretation.',
+        outcome: 'Can interpret model quality and choose fit-for-purpose metrics.',
+        lessons: [
+          {
+            id: 'az-w2-l1',
+            title: 'Model Evaluation Bootcamp',
+            description: 'Precision, recall, and threshold tuning in a guided lab.',
+            duration: '26m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Training vs Validation',
+                content: 'Avoid overfitting with split strategy, baseline metrics, and iterative validation.'
+              },
+              {
+                type: 'puzzle',
+                title: 'Pipeline Assembly',
+                content: 'Build the correct ML pipeline sequence.',
+                interaction: {
+                  type: 'puzzle',
+                  items: ['Data Preparation', 'Feature Engineering', 'Train Model', 'Validate and Tune'],
+                  correctItems: ['Data Preparation', 'Feature Engineering', 'Train Model', 'Validate and Tune'],
+                }
+              },
+              {
+                type: 'workshop',
+                title: 'Metric Interpretation Lab',
+                content: 'Write a release decision note from given model results.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Given precision 0.91 and recall 0.55 for fraud alerts, what should be tuned and why?',
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'az-w3',
+        title: 'Week 3: NLP, Vision, and Speech',
+        description: 'Applied AI services simulation for language and perception tasks.',
+        outcome: 'Can design an NLP+Vision solution pattern and validate behavior.',
+        lessons: [
+          {
+            id: 'az-w3-l1',
+            title: 'NLP and Vision Integrated Lab',
+            description: 'Run text sentiment and image signal flow in one mission.',
+            duration: '28m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Service-Oriented AI Design',
+                content: 'Compose intent classification, sentiment, OCR, and detection as separate capabilities.'
+              },
+              {
+                type: 'interaction',
+                title: 'Capability Routing Check',
+                content: 'Choose the best routing for product review moderation with images and text.',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: ['Only OCR', 'Only sentiment', 'Sentiment + toxicity + image safety', 'Only translation'],
+                  correctIndex: 2,
+                }
+              },
+              {
+                type: 'reward',
+                title: 'Week 3 Complete',
+                content: 'You can now map multimodal workloads to deployment-ready patterns.'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'az-w4',
+        title: 'Week 4: AI-900 Final Readiness Sprint',
+        description: 'Final prep and internal exam simulation.',
+        outcome: 'Can pass AI-900 style assessments and justify architecture decisions.',
+        lessons: [
+          {
+            id: 'az-w4-l1',
+            title: 'Final Challenge and Review',
+            description: 'Timed multi-domain challenge with feedback.',
+            duration: '30m',
+            steps: [
+              {
+                type: 'sorting',
+                title: 'Domain Coverage Planner',
+                content: 'Sequence your final review strategy for max retention.',
+                interaction: {
+                  type: 'sorting',
+                  items: ['Workloads', 'ML Concepts', 'Vision/NLP/Speech', 'Responsible AI'],
+                  correctItems: ['Workloads', 'ML Concepts', 'Vision/NLP/Speech', 'Responsible AI'],
+                }
               },
               {
                 type: 'cert',
-                title: 'Official 18-Lesson Course',
-                content: 'Access the full Generative AI for Beginners curriculum on GitHub.',
-                externalUrl: 'https://github.com/microsoft/generative-ai-for-beginners'
+                title: 'Internal AI-900 Readiness Board',
+                content: 'Complete the in-app readiness checklist and score report.',
+                embeddedContent: '<div style="padding:16px;font-family:Outfit,sans-serif;"><h3 style="margin:0 0 8px 0;font-weight:800;">AI-900 Readiness Board</h3><ul style="margin:0;padding-left:18px;"><li>Concept mastery check</li><li>Scenario mapping check</li><li>Governance check</li><li>Timed simulation complete</li></ul></div>',
+                proctoringRequired: true,
               }
             ]
           }
@@ -143,41 +218,780 @@ export const COURSES: Course[] = [
     ]
   },
   {
-    id: 'google-ai-essentials',
-    title: 'Google AI Essentials',
-    description: 'Grow with Google certification covering generative AI basics, prompt engineering, and workflow optimization.',
-    image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop', // Google-style clean office
-    targetLevel: 'beginner',
+    id: 'microsoft-genai-agent-engineering',
+    title: 'Microsoft Generative AI & Agent Engineering',
+    description: 'Dedicated Microsoft-aligned GenAI path rebuilt in-platform with weekly builds and guided agent projects.',
+    image: 'assets/agent-engineer.png',
+    targetLevel: 'builder',
     expectations: [
-      'Master prompt engineering for productivity',
-      'Optimize daily workflows with AI tools',
-      'Earn a professional Google certificate'
+      'Build production-style generative AI agents',
+      'Implement prompt contracts, tools, and evaluation loops',
+      'Deliver deployable portfolio projects'
     ],
-    outcome: 'Verified Google AI Essentials certificate and AI-powered workflow mastery.',
+    outcome: 'Learner can ship a reliable agent workflow with observability and governance controls.',
+    isCertificationCourse: true,
     modules: [
       {
-        id: 'google-essentials-m1',
-        title: 'Core AI Productivity',
-        description: 'How to use Gemini and other LLMs for professional tasks.',
-        outcome: 'Verified productivity skills using Google AI tools.',
+        id: 'ms-gen-w1',
+        title: 'Week 1: Prompt Engineering Systems',
+        description: 'Structured prompting, role design, and response contracts.',
+        outcome: 'Can design prompts with deterministic output behavior.',
         lessons: [
           {
-            id: 'google-basics',
-            title: 'Introduction to Generative AI',
-            description: 'Official Google training on LLM fundamentals.',
-            duration: '20m',
+            id: 'ms-gen-w1-l1',
+            title: 'Prompt Contract Design',
+            description: 'Use constraints and schemas to reduce hallucination and improve consistency.',
+            duration: '24m',
             steps: [
               {
-                type: 'video',
-                title: 'Google AI Courses with Certificates',
-                content: 'Simplilearn walkthrough of the free Google AI course track.',
-                videoUrl: 'Pj-nCWYRmA4'
+                type: 'teach',
+                title: 'Contract-First Prompting',
+                content: 'Define role, context, constraints, and expected output schema before any generation call.'
+              },
+              {
+                type: 'workshop',
+                title: 'Prompt Forge Lab',
+                content: 'Build a support copilot prompt with confidence and escalation policy.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Generate a strict JSON response format for incident triage with severity and next action.',
+                }
+              },
+              {
+                type: 'interaction',
+                title: 'Guardrail Decision Test',
+                content: 'Choose the safest output policy for automation workflows.',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: ['Unbounded free text', 'JSON schema with validation', 'Paragraph summary only', 'No output checks'],
+                  correctIndex: 2,
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'ms-gen-w2',
+        title: 'Week 2: Tool Use and Retrieval',
+        description: 'Agent tool integration and retrieval-augmented response design.',
+        outcome: 'Can build tool-enabled agent pipelines and reduce unsupported outputs.',
+        lessons: [
+          {
+            id: 'ms-gen-w2-l1',
+            title: 'Toolchain and RAG Lab',
+            description: 'Combine retrieval and tool actions in one agent loop.',
+            duration: '27m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Tool Invocation Patterns',
+                content: 'Use function-style tool calls for deterministic side effects and traceability.'
+              },
+              {
+                type: 'puzzle',
+                title: 'RAG Flow Assembly',
+                content: 'Assemble the retrieval loop in the right order.',
+                interaction: {
+                  type: 'puzzle',
+                  items: ['Query Expansion', 'Retrieve Chunks', 'Grounded Generation', 'Citation Output'],
+                  correctItems: ['Query Expansion', 'Retrieve Chunks', 'Grounded Generation', 'Citation Output'],
+                }
+              },
+              {
+                type: 'reward',
+                title: 'Week 2 Complete',
+                content: 'You can now build tool-enabled grounded agents.'
+              },
+            ]
+          }
+        ]
+      },
+      {
+        id: 'ms-gen-w3',
+        title: 'Week 3: Agent Evaluation and Safety',
+        description: 'Evaluation sets, rubric scoring, and failure-mode prevention.',
+        outcome: 'Can run repeatable evaluations and improve agent reliability.',
+        lessons: [
+          {
+            id: 'ms-gen-w3-l1',
+            title: 'Evaluation Matrix Lab',
+            description: 'Design test sets and score agent behavior under constraints.',
+            duration: '25m',
+            steps: [
+              {
+                type: 'sorting',
+                title: 'Evaluation Pipeline Order',
+                content: 'Order the evaluation cycle for agent quality improvement.',
+                interaction: {
+                  type: 'sorting',
+                  items: ['Define Rubric', 'Run Test Set', 'Analyze Failures', 'Patch Prompt/Tools'],
+                  correctItems: ['Define Rubric', 'Run Test Set', 'Analyze Failures', 'Patch Prompt/Tools'],
+                }
+              },
+              {
+                type: 'interaction',
+                title: 'Safety Escalation Trigger',
+                content: 'When should the agent refuse and escalate?',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: ['Any user typo', 'Policy conflict or high uncertainty', 'Every response', 'Never escalate'],
+                  correctIndex: 1,
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'ms-gen-w4',
+        title: 'Week 4: Deployment Sprint and Portfolio',
+        description: 'Capstone deployment simulation with portfolio artifact output.',
+        outcome: 'Can deliver a portfolio-ready deployed agent system.',
+        lessons: [
+          {
+            id: 'ms-gen-w4-l1',
+            title: 'Capstone Deployment',
+            description: 'Final deployment challenge with evidence pack.',
+            duration: '30m',
+            steps: [
+              {
+                type: 'workshop',
+                title: 'Deployment Plan Draft',
+                content: 'Draft deployment, rollback, and monitoring plan for your agent service.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Provide rollout phases, rollback criteria, and three critical monitoring KPIs.',
+                }
               },
               {
                 type: 'cert',
-                title: 'Google Grow: AI Essentials',
-                content: 'Start the official Google AI Essentials course on Coursera.',
-                externalUrl: 'https://grow.google/ai'
+                title: 'Internal GenAI Engineer Review',
+                content: 'Submit architecture and evaluation summary for readiness approval.',
+                embeddedContent: '<div style="padding:16px;font-family:Outfit,sans-serif;"><h3 style="margin:0 0 8px 0;font-weight:800;">GenAI Engineer Review</h3><ul style="margin:0;padding-left:18px;"><li>Prompt contract validated</li><li>RAG quality checked</li><li>Safety rubric passed</li><li>Deployment plan submitted</li></ul></div>',
+                proctoringRequired: true,
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'google-ai-essentials-track',
+    title: 'Google AI Essentials Track',
+    description: 'Dedicated Google AI curriculum rebuilt inside Beast AI with weekly checkpoints and practical labs.',
+    image: 'assets/setup.png',
+    targetLevel: 'beginner',
+    expectations: [
+      'Master foundational GenAI usage for productivity and problem solving',
+      'Build repeatable prompt workflows and evaluate output quality',
+      'Produce portfolio evidence from weekly labs'
+    ],
+    outcome: 'Learner can operate Google-style AI workflows and build practical productivity copilots.',
+    isCertificationCourse: true,
+    modules: [
+      {
+        id: 'gai-w1',
+        title: 'Week 1: GenAI Foundations',
+        description: 'Core GenAI patterns and responsible usage habits.',
+        outcome: 'Can distinguish effective prompts from weak prompts and explain why.',
+        lessons: [
+          {
+            id: 'gai-w1-l1',
+            title: 'Prompt Quality Foundations',
+            description: 'Context, constraints, and desired output style.',
+            duration: '20m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Prompt Structure Basics',
+                content: 'Strong prompts specify objective, context, constraints, and output format.'
+              },
+              {
+                type: 'interaction',
+                title: 'Prompt Comparison Drill',
+                content: 'Which prompt is most likely to produce consistent results?',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: [
+                    'Give me ideas',
+                    'Write 5 marketing ideas',
+                    'Generate 5 B2B onboarding email ideas for SaaS founders, concise bullets',
+                    'Do your best',
+                  ],
+                  correctIndex: 2,
+                }
+              },
+              {
+                type: 'puzzle',
+                title: 'Workflow Assembly',
+                content: 'Assemble the right sequence for a repeatable AI workflow.',
+                interaction: {
+                  type: 'puzzle',
+                  items: ['Define Goal', 'Prompt Draft', 'Run and Evaluate', 'Refine and Save Template'],
+                  correctItems: ['Define Goal', 'Prompt Draft', 'Run and Evaluate', 'Refine and Save Template'],
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'gai-w2',
+        title: 'Week 2: Productivity Systems',
+        description: 'Apply GenAI for planning, writing, and workflow acceleration.',
+        outcome: 'Can design role-specific AI assistants for day-to-day operations.',
+        lessons: [
+          {
+            id: 'gai-w2-l1',
+            title: 'Productivity Copilot Lab',
+            description: 'Build an AI assistant for weekly planning and communication.',
+            duration: '24m',
+            steps: [
+              {
+                type: 'workshop',
+                title: 'Template Builder Workshop',
+                content: 'Create a reusable assistant template for planning, follow-up, and reporting.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Draft a weekly execution assistant prompt with outputs for priorities, blockers, and owner actions.',
+                }
+              },
+              {
+                type: 'reward',
+                title: 'Week 2 Complete',
+                content: 'You now own a reusable productivity copilot framework.'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'gai-w3',
+        title: 'Week 3: Multimodal and Analysis Workflows',
+        description: 'Structured prompting for text, images, and summarized insight extraction.',
+        outcome: 'Can orchestrate multimodal analysis tasks with clear output contracts.',
+        lessons: [
+          {
+            id: 'gai-w3-l1',
+            title: 'Multimodal Workflow Lab',
+            description: 'Combine image context and text analysis into one output.',
+            duration: '23m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Multimodal Prompting',
+                content: 'Design prompts that merge visual observations with text reasoning.'
+              },
+              {
+                type: 'sorting',
+                title: 'Analysis Sequence',
+                content: 'Order the sequence for multimodal insight generation.',
+                interaction: {
+                  type: 'sorting',
+                  items: ['Collect Inputs', 'Define Output Schema', 'Run Prompt', 'Validate Insight'],
+                  correctItems: ['Collect Inputs', 'Define Output Schema', 'Run Prompt', 'Validate Insight'],
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'gai-w4',
+        title: 'Week 4: Google AI Essentials Capstone',
+        description: 'In-app capstone review and readiness checklist.',
+        outcome: 'Can deliver a full AI productivity capstone with measurable outcomes.',
+        lessons: [
+          {
+            id: 'gai-w4-l1',
+            title: 'Capstone and Certification Prep',
+            description: 'Final project demonstration and scorecard.',
+            duration: '26m',
+            steps: [
+              {
+                type: 'cert',
+                title: 'Google Track Internal Readiness',
+                content: 'Submit capstone artifacts and readiness checklist.',
+                embeddedContent: '<div style="padding:16px;font-family:Outfit,sans-serif;"><h3 style="margin:0 0 8px 0;font-weight:800;">Google AI Essentials Readiness</h3><ul style="margin:0;padding-left:18px;"><li>Prompt templates completed</li><li>Workflow lab passed</li><li>Multimodal case complete</li><li>Capstone documented</li></ul></div>',
+                proctoringRequired: true,
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'beast-ai-startup-incubator',
+    title: 'Beast AI Global Internship & Startup Incubator',
+    description: 'Premium execution track for self-discovery, team formation, MVP building, Beast AI platform engineering, demo day, and startup launch readiness.',
+    image: 'assets/beast_ai_heroes_landing_page_1777456181877.png',
+    targetLevel: 'builder',
+    expectations: [
+      'Form disciplined cross-functional teams with clear execution roles',
+      'Build real AI tools and Beast AI product features that students keep',
+      'Move from incubation through MVP, demo, and startup launch readiness'
+    ],
+    outcome: 'Learner leaves with deployed AI assets, startup-builder experience, and a team-based portfolio narrative.',
+    modules: [
+      {
+        id: 'incubator-m1',
+        title: 'Phase 1: Personal Intelligence Mapping',
+        description: 'Map identity, existing skills, value creation, and founder-direction goals.',
+        outcome: 'Can define what they have, what they give, and what they want before joining a team.',
+        lessons: [
+          {
+            id: 'incubator-m1-l1',
+            title: 'Identity and Value Mapping',
+            description: 'Self-discovery for role clarity and contribution design.',
+            duration: '24m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Personal Intelligence Framework',
+                content: 'Record current skills, value offered to a team, and the outcomes you want to build toward.'
+              },
+              {
+                type: 'workshop',
+                title: 'Value Map Draft',
+                content: 'Create your self-discovery profile for the incubator cohort.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Write your What I Have / What I Give / What I Want statement in team-ready format.',
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'incubator-m2',
+        title: 'Phase 2: AI Team Formation and Leadership',
+        description: 'Scout peers, organize teams of five, and assign responsibility ownership.',
+        outcome: 'Can evaluate talent, form execution teams, and assign leads without chaos.',
+        lessons: [
+          {
+            id: 'incubator-m2-l1',
+            title: 'Team Formation Command',
+            description: 'Structure scouting, lead assignment, and role coverage.',
+            duration: '28m',
+            steps: [
+              {
+                type: 'sorting',
+                title: 'Formation Sequence',
+                content: 'Order the team formation flow correctly.',
+                interaction: {
+                  type: 'sorting',
+                  items: ['Scout Talent', 'Form Teams of Five', 'Assign Team Leads', 'Lock Role Coverage'],
+                  correctItems: ['Scout Talent', 'Form Teams of Five', 'Assign Team Leads', 'Lock Role Coverage'],
+                }
+              },
+              {
+                type: 'interaction',
+                title: 'Role Coverage Check',
+                content: 'Which role mix prevents team execution gaps?',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: ['Five AI engineers', 'AI engineer, product builder, strategist, operations lead, pitch lead', 'Only founders and marketers', 'Only coders and designers'],
+                  correctIndex: 1,
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'incubator-m3',
+        title: 'Phase 3: Bootcamp Core Delivery',
+        description: 'Entrepreneurship, technology, and personal mastery under one operating rhythm.',
+        outcome: 'Can move from concept to execution using AI, business, and personal discipline frameworks.',
+        lessons: [
+          {
+            id: 'incubator-m3-l1',
+            title: 'AI + Business + Mastery Bootcamp',
+            description: 'Blend startup thinking, tool selection, and disciplined communication.',
+            duration: '30m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Three Bootcamp Tracks',
+                content: 'Entrepreneurship covers validation and market fit, technology covers stack/tool decisions, and personal mastery covers leadership, focus, and communication.'
+              },
+              {
+                type: 'puzzle',
+                title: 'Track Alignment',
+                content: 'Assemble the three-track bootcamp model.',
+                interaction: {
+                  type: 'puzzle',
+                  items: ['Entrepreneurship', 'Technology', 'Personal Mastery'],
+                  correctItems: ['Entrepreneurship', 'Technology', 'Personal Mastery'],
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'incubator-m4',
+        title: 'Phase 4: MVP Build and Product Validation',
+        description: 'Each team chooses a problem, defines solution value, and builds an AI-powered MVP.',
+        outcome: 'Can build a real prototype with AI integration and a validated use case.',
+        lessons: [
+          {
+            id: 'incubator-m4-l1',
+            title: 'MVP Build Lab',
+            description: 'Problem selection, solution framing, prototype build, and validation loop.',
+            duration: '34m',
+            steps: [
+              {
+                type: 'workshop',
+                title: 'MVP Definition Lab',
+                content: 'Define the product problem, core user, MVP feature set, and AI advantage.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Describe your team MVP: problem, user, AI value, and first release feature list.',
+                }
+              },
+              {
+                type: 'reward',
+                title: 'Prototype Ready',
+                content: 'Your team now has a build-ready MVP blueprint.'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'incubator-m5',
+        title: 'Phase 5: Build Beast AI Application Engineering Lab',
+        description: 'Students build real Beast AI application features and integrate them into team-owned product zones.',
+        outcome: 'Can contribute production-style features to a shared application and present that work as portfolio proof.',
+        lessons: [
+          {
+            id: 'incubator-m5-l1',
+            title: 'Build Beast AI Track',
+            description: 'Construct real platform components, integrate them, and test the full user journey.',
+            duration: '36m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Component Build Layer',
+                content: 'Students build features like login/profile, course cards, lesson player, notepad, task board, team dashboard, AI tutor, quizzes, and portfolio cards.'
+              },
+              {
+                type: 'sorting',
+                title: 'Integration Sequence',
+                content: 'Sequence the real product assembly path.',
+                interaction: {
+                  type: 'sorting',
+                  items: ['Build Component', 'Integrate Team Section', 'Test User Flow', 'Demo the Product'],
+                  correctItems: ['Build Component', 'Integrate Team Section', 'Test User Flow', 'Demo the Product'],
+                }
+              },
+              {
+                type: 'workshop',
+                title: 'Take-Home Tool Design',
+                content: 'Students plan the AI toolkit they will keep after the program.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Define your take-home stack: assistant, scheduler, CRM, contract analyzer, and agent workflow.',
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'incubator-m6',
+        title: 'Phase 6: Demo Day, Shark Tank, and Startup Launch',
+        description: 'Teams present products, pitch business value, and qualify for startup launch support.',
+        outcome: 'Can pitch a product, explain the AI advantage, and transition into startup creation pathways.',
+        lessons: [
+          {
+            id: 'incubator-m6-l1',
+            title: 'Pitch and Launch Board',
+            description: 'Final demo, market case, scoring, and launch-readiness review.',
+            duration: '32m',
+            steps: [
+              {
+                type: 'cert',
+                title: 'Demo Day and Shark Tank Readiness',
+                content: 'Present the working app, explain the problem, market, AI advantage, and startup path.',
+                embeddedContent: '<div style="padding:16px;font-family:Outfit,sans-serif;"><h3 style="margin:0 0 8px 0;font-weight:800;">Incubator Launch Board</h3><ul style="margin:0;padding-left:18px;"><li>Working MVP demonstrated</li><li>Problem and market clearly defined</li><li>AI advantage explained</li><li>Pitch clarity and execution scored</li><li>Startup launch readiness discussed with family and mentors</li></ul></div>',
+                proctoringRequired: true,
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'leeway-standards-engineer',
+    title: 'Leeway Standards + Agent VM Engineer Track',
+    description: 'Advanced Leeway course with weekly standards execution, agent society orchestration, and full Agent VM operations.',
+    image: 'assets/society.png',
+    targetLevel: 'engineer',
+    expectations: [
+      'Apply Leeway standards to architect autonomous agent systems',
+      'Operate governance and policy enforcement in multi-agent runs',
+      'Use Agent VM as hands-on execution environment'
+    ],
+    outcome: 'Learner can run and govern a standards-aligned AI system from design to VM execution.',
+    modules: [
+      {
+        id: 'leeway-mc-1',
+        title: 'Master Module 1: Philosophy and Governance Doctrine',
+        description: 'Governance-first architecture, black-box failure modes, and the four pillars of sovereignty.',
+        outcome: 'Can explain why discoverable, auditable, repairable, and safe-to-evolve systems outperform black-box stacks.',
+        lessons: [
+          {
+            id: 'leeway-mc-1-l1',
+            title: 'The Sovereignty Doctrine',
+            description: 'Shift from fragmented AI execution to governed multi-agent systems.',
+            duration: '35m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'The Black Box Problem',
+                content: 'Traditional AI stacks fail at scale without governance, auditability, and repair loops.'
+              },
+              {
+                type: 'interaction',
+                title: 'Four Pillars Validation',
+                content: 'Select the mandatory LeeWay sovereignty pillars.',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: ['Discoverable, Auditable, Repairable, Safe to Evolve', 'Fast, Cheap, Unrestricted, Autonomous', 'Cloud-only, Manual, Silent, Dynamic', 'Prompt-first, Tool-first, Cache-first, UI-first'],
+                  correctIndex: 0,
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'leeway-mc-2',
+        title: 'Master Module 2: Agent Anatomy and LLM School',
+        description: 'Skill atoms, workflow composition, and triple-threat memory architecture.',
+        outcome: 'Can model autonomous systems with modular capabilities and persistent learning loops.',
+        lessons: [
+          {
+            id: 'leeway-mc-2-l1',
+            title: 'Skill Atoms and Triple-Threat Memory',
+            description: 'Build capability graphs with episodic, semantic, and procedural memory layers.',
+            duration: '38m',
+            steps: [
+              {
+                type: 'puzzle',
+                title: 'Skill Atom Assembly',
+                content: 'Assemble the operating model from atomized capabilities.',
+                interaction: {
+                  type: 'puzzle',
+                  items: ['Skill Atoms', 'Workflow Composition', 'Memory Index', 'Execution Routing'],
+                  correctItems: ['Skill Atoms', 'Workflow Composition', 'Memory Index', 'Execution Routing'],
+                }
+              },
+              {
+                type: 'sorting',
+                title: 'Triple-Threat Memory Sequence',
+                content: 'Order memory layers by execution context flow.',
+                interaction: {
+                  type: 'sorting',
+                  items: ['Episodic', 'Semantic', 'Procedural'],
+                  correctItems: ['Episodic', 'Semantic', 'Procedural'],
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'leeway-mc-3',
+        title: 'Master Module 3: Sovereign Cycle Operations',
+        description: 'The mandatory 8-stage execution heartbeat from perception to Lee Prime.',
+        outcome: 'Can enforce the full sovereign cycle including Veritas gate and memory synthesis.',
+        lessons: [
+          {
+            id: 'leeway-mc-3-l1',
+            title: '8-Stage Governance Heartbeat',
+            description: 'Map every request across sovereign stages with audit checkpoints.',
+            duration: '40m',
+            steps: [
+              {
+                type: 'sorting',
+                title: 'Sovereign Cycle Sequence',
+                content: 'Order the LeeWay 8-stage sequence correctly.',
+                interaction: {
+                  type: 'sorting',
+                  items: ['Perception', 'Origin', 'Structure', 'Execution', 'Veritas', 'Echo', 'Synthesis', 'Lee Prime'],
+                  correctItems: ['Perception', 'Origin', 'Structure', 'Execution', 'Veritas', 'Echo', 'Synthesis', 'Lee Prime'],
+                }
+              },
+              {
+                type: 'interaction',
+                title: 'Veritas Gate Decision',
+                content: 'What happens when a request fails governance scoring?',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: ['Bypass and deploy', 'Route to Nova repair loop', 'Send to user with warning', 'Discard without logging'],
+                  correctIndex: 1,
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'leeway-mc-4',
+        title: 'Master Module 4: Execution Spine and 7 Families',
+        description: 'Build the hierarchical execution spine and route work through governed family leads.',
+        outcome: 'Can architect and operate Nexus, Nova, Atlas, Shield, Aura, Chronos, and Prime families.',
+        lessons: [
+          {
+            id: 'leeway-mc-4-l1',
+            title: 'Family Governance Mapping',
+            description: 'Assign responsibilities and escalation routes across all sovereign families.',
+            duration: '36m',
+            steps: [
+              {
+                type: 'puzzle',
+                title: 'Family Role Mapping',
+                content: 'Assemble the seven sovereign families with their primary roles.',
+                interaction: {
+                  type: 'puzzle',
+                  items: ['Nexus: Routing', 'Nova: Engineering', 'Atlas: Memory', 'Shield: Compliance', 'Aura: Interface', 'Chronos: Automation', 'Prime: Final Authority'],
+                  correctItems: ['Nexus: Routing', 'Nova: Engineering', 'Atlas: Memory', 'Shield: Compliance', 'Aura: Interface', 'Chronos: Automation', 'Prime: Final Authority'],
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'leeway-mc-5',
+        title: 'Master Module 5: Engineering for Compliance',
+        description: 'Header injection, action regions, intent tags, and autonomous compliance fleet operations.',
+        outcome: 'Can enforce 85/100 compliance using StandardsAgent and AutonomyAuditor loops.',
+        lessons: [
+          {
+            id: 'leeway-mc-5-l1',
+            title: 'Compliance Fleet Operations',
+            description: 'Implement structural constraints required for sovereign repairability.',
+            duration: '34m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'Compliance Structural Rules',
+                content: 'Mandatory headers, region markers, and intent tags are non-negotiable for autonomous repair.'
+              },
+              {
+                type: 'workshop',
+                title: 'AutonomyAuditor Simulation',
+                content: 'Draft a code compliance remediation plan for a 70/100 artifact.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Provide a remediation sequence to raise a file from 70/100 to 85/100 using standards tools.',
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'leeway-mc-6',
+        title: 'Master Module 6: One-Click Sovereignty',
+        description: 'Four-tier stack deployment with Docker Compose and resilient containerized orchestration.',
+        outcome: 'Can launch sovereign ecosystem stacks with one-click orchestration and self-healing behavior.',
+        lessons: [
+          {
+            id: 'leeway-mc-6-l1',
+            title: 'Four-Tier Stack Deployment',
+            description: 'Deploy Brain, Interface, Memory, and Executors in controlled isolation.',
+            duration: '37m',
+            steps: [
+              {
+                type: 'teach',
+                title: 'One-Click Sovereignty Runtime',
+                content: 'FastAPI orchestrates the cycle, React/Gradio exposes interface, ONNX handles memory, and executors run compliance workflows.'
+              },
+              {
+                type: 'interaction',
+                title: 'Docker Isolation Rationale',
+                content: 'Why is Docker Compose required in the LeeWay standard?',
+                interaction: {
+                  type: 'multiple-choice',
+                  options: ['Only for UI themes', 'For isolation, self-healing, and one-click lifecycle control', 'To replace governance policies', 'To disable Veritas checks'],
+                  correctIndex: 1,
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'leeway-mc-labs',
+        title: 'Master Labs: Technical Implementation',
+        description: 'Hands-on labs for Veritas Gate simulation, memory insertion, and action-region compliance.',
+        outcome: 'Can execute all mandatory technical labs and produce governed artifacts.',
+        lessons: [
+          {
+            id: 'leeway-mc-labs-l1',
+            title: 'Veritas + Memory + Auditor Lab Pack',
+            description: 'Run all three implementation labs from the Master Class materials.',
+            duration: '45m',
+            steps: [
+              {
+                type: 'workshop',
+                title: 'Lab 1: Veritas Gate Simulator',
+                content: 'Implement pass/fail routing behavior with a hard 85/100 threshold.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Design pseudocode for veritas_gate(data) that routes failed outputs to Nova repair.',
+                }
+              },
+              {
+                type: 'workshop',
+                title: 'Lab 2: Triple-Threat Memory Insert',
+                content: 'Store execution outcomes in episodic and semantic layers for continuity.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Describe how you store one execution event across episodic and semantic memory collections.',
+                }
+              },
+              {
+                type: 'workshop',
+                title: 'Lab 3: Action Region Compliance',
+                content: 'Add region blocks and intent tags to prepare files for autonomous repair.',
+                interaction: {
+                  type: 'workshop',
+                  question: 'Show the structure for REGION/ENDREGION and intent tags in a small script.',
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'leeway-mc-cert',
+        title: 'Master Certification Readiness',
+        description: 'Final mastery audit using the 50-question Sovereign Architect certification bank.',
+        outcome: 'Can pass the sovereign mastery assessment and justify architectural decisions.',
+        lessons: [
+          {
+            id: 'leeway-mc-cert-l1',
+            title: 'Sovereign Architect Exam Board',
+            description: 'Run the full readiness board and verify mastery-level understanding.',
+            duration: '40m',
+            steps: [
+              {
+                type: 'cert',
+                title: '50-Question Sovereign Architect Readiness',
+                content: 'Complete the final mastery readiness check based on the certification exam bank.',
+                embeddedContent: '<div style="padding:16px;font-family:Outfit,sans-serif;"><h3 style="margin:0 0 8px 0;font-weight:800;">Sovereign Architect Readiness Board</h3><ul style="margin:0;padding-left:18px;"><li>Doctrine and governance fundamentals</li><li>Sovereign cycle and family routing</li><li>Compliance engineering controls</li><li>One-click sovereignty deployment</li><li>50-question exam readiness verified</li></ul></div>',
+                proctoringRequired: true,
               }
             ]
           }
@@ -224,22 +1038,22 @@ export const AGENT_LEE_VM_PHASES = [
   {
     id: 'phase-1',
     title: 'Leeway Standards Foundation',
-    detail: 'Download and inspect the LeeWay Standards repository and training manuals.'
+    detail: 'Complete in-app standards canon review and contract mapping labs.'
   },
   {
     id: 'phase-2',
     title: 'Agent Build Layer',
-    detail: 'Build and run core agents, then map agent contracts and behavior policies.'
+    detail: 'Build and run core agents, then validate contracts and behavior policies.'
   },
   {
     id: 'phase-3',
     title: 'Society Orchestration',
-    detail: 'Compose multi-agent flows and validate collaboration without direct LLM dependency.'
+    detail: 'Compose multi-agent flows and validate collaboration with policy enforcement.'
   },
   {
     id: 'phase-4',
     title: 'Agent Lee VM Demonstration',
-    detail: 'Unlock and run the Agent VM experience as the final capability reveal.'
+    detail: 'Unlock and run the Agent VM as the final hands-on deployment environment.'
   }
 ];
 

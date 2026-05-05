@@ -145,4 +145,31 @@ export interface UserProgress {
   certificationStatus?: Record<string, CertificationStatus>;
   vmShowcaseUnlocked?: boolean;
   activeBadgeId?: string;
+  academyProfile?: {
+    fullName?: string;
+    email?: string;
+    role?: 'student' | 'instructor';
+    organization?: string;
+    timezone?: string;
+    bio?: string;
+  };
+  academyMessages?: {
+    id: string;
+    from: 'student' | 'instructor';
+    to: 'student' | 'instructor';
+    subject: string;
+    body: string;
+    timestamp: string;
+  }[];
+  mentorshipEnrollments?: {
+    id: string;
+    fullName: string;
+    email: string;
+    track: 'peer' | 'mentor-led' | 'team-pod';
+    focusArea: string;
+    weeklyAvailability: string;
+    goals: string;
+    status: 'submitted' | 'matched' | 'active';
+    timestamp: string;
+  }[];
 }

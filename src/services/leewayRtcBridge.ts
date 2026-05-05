@@ -1,4 +1,4 @@
-import { eventBus } from 'leeway-sdk/src/core/EventBus';
+import { eventBus } from './leewayEventBus';
 
 const RTC_SDK_BASES = [
   'leeway-edge-rtc/src',

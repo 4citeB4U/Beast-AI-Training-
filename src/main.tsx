@@ -37,7 +37,12 @@ import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import { agentLeeRuntimeBootstrap } from 'leeway-sdk/src/core/AgentLeeRuntimeBootstrap';
+import { loadRuntimeModules } from './services/leewayRuntime';
+
+type RuntimeBootstrap = {
+  setLiteMode: (enabled: boolean) => void;
+  initialize: () => Promise<void>;
+};
 
 const registerServiceWorker = () => {
   if (!('serviceWorker' in navigator)) return;
@@ -76,38 +81,48 @@ const boot = async () => {
     }
   };
 
-  // Fail-safe: Hide splash screen after 3s regardless of paint
-  const failSafe = setTimeout(hideSplash, 3000);
+  // Fail-safe: Hide splash screen after 1.5s regardless of paint
+  const failSafe = setTimeout(hideSplash, 1500);
 
   requestAnimationFrame(() => {
     setTimeout(() => {
       clearTimeout(failSafe);
       hideSplash();
-    }, 400); // Small delay to ensure App shell is visible
+    }, 100); // Small delay to ensure App shell is visible
   });
 
-  // 3. Background SDK Establishment (Non-blocking)
+  // 3. Background SDK Establishment (Non-blocking + lazy-loaded)
   const initializeSDK = async () => {
     try {
+      const { runtimeBootstrap } = await loadRuntimeModules();
+
       // Set performance mode from persistence
       const saved = localStorage.getItem('beast_ai_progress');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.preferences?.performanceMode) {
-          agentLeeRuntimeBootstrap.setLiteMode(true);
+          runtimeBootstrap.setLiteMode(true);
         }
       }
 
       // Initialize Leeway SDK in the background
-      await agentLeeRuntimeBootstrap.initialize();
+      await runtimeBootstrap.initialize();
       console.log('✅ LEEWAY_CORE: System integrity verified.');
     } catch (error) {
       console.warn('⚠️ LEEWAY_CORE: System degradation detected.', error);
     }
   };
 
-  // Run SDK init without blocking the UI
-  initializeSDK();
+  // Run SDK init without blocking first paint.
+  if ('requestIdleCallback' in window) {
+    (window as any).requestIdleCallback(() => {
+      void initializeSDK();
+    }, { timeout: 2000 });
+  } else {
+    setTimeout(() => {
+      void initializeSDK();
+    }, 0);
+  }
 };
 
 registerServiceWorker();

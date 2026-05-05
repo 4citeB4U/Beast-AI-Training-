@@ -47,6 +47,21 @@ interface AppContextType {
   updateCertificationStatus: (certId: string, status: CertificationStatus) => void;
   unlockVmShowcase: () => void;
   setActiveBadge: (badgeId: string) => void;
+  updateAcademyProfile: (profile: Partial<NonNullable<UserProgress['academyProfile']>>) => void;
+  sendAcademyMessage: (payload: {
+    from: 'student' | 'instructor';
+    to: 'student' | 'instructor';
+    subject: string;
+    body: string;
+  }) => void;
+  enrollMentorship: (payload: {
+    fullName: string;
+    email: string;
+    track: 'peer' | 'mentor-led' | 'team-pod';
+    focusArea: string;
+    weeklyAvailability: string;
+    goals: string;
+  }) => void;
 }
 
 const defaultProgress: UserProgress = {
@@ -62,7 +77,9 @@ const defaultProgress: UserProgress = {
     performanceMode: false,
   },
   certificationStatus: {},
-  vmShowcaseUnlocked: false
+  vmShowcaseUnlocked: false,
+  academyMessages: [],
+  mentorshipEnrollments: [],
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -180,8 +197,70 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
   };
 
+  const updateAcademyProfile = (profile: Partial<NonNullable<UserProgress['academyProfile']>>) => {
+    setProgress(prev => ({
+      ...prev,
+      academyProfile: {
+        ...(prev.academyProfile || {}),
+        ...profile,
+      },
+      lastSync: new Date().toISOString(),
+    }));
+  };
+
+  const sendAcademyMessage = (payload: {
+    from: 'student' | 'instructor';
+    to: 'student' | 'instructor';
+    subject: string;
+    body: string;
+  }) => {
+    setProgress(prev => ({
+      ...prev,
+      academyMessages: [
+        ...(prev.academyMessages || []),
+        {
+          id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          from: payload.from,
+          to: payload.to,
+          subject: payload.subject,
+          body: payload.body,
+          timestamp: new Date().toISOString(),
+        },
+      ],
+      lastSync: new Date().toISOString(),
+    }));
+  };
+
+  const enrollMentorship = (payload: {
+    fullName: string;
+    email: string;
+    track: 'peer' | 'mentor-led' | 'team-pod';
+    focusArea: string;
+    weeklyAvailability: string;
+    goals: string;
+  }) => {
+    setProgress(prev => ({
+      ...prev,
+      mentorshipEnrollments: [
+        ...(prev.mentorshipEnrollments || []),
+        {
+          id: `ment_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          fullName: payload.fullName,
+          email: payload.email,
+          track: payload.track,
+          focusArea: payload.focusArea,
+          weeklyAvailability: payload.weeklyAvailability,
+          goals: payload.goals,
+          status: 'submitted',
+          timestamp: new Date().toISOString(),
+        },
+      ],
+      lastSync: new Date().toISOString(),
+    }));
+  };
+
   return (
-    <AppContext.Provider value={{ progress, completeLesson, unlockBadge, setOnboarding, updatePreferences, updateCredentials, addFeedback, updateCertificationStatus, unlockVmShowcase, setActiveBadge }}>
+    <AppContext.Provider value={{ progress, completeLesson, unlockBadge, setOnboarding, updatePreferences, updateCredentials, addFeedback, updateCertificationStatus, unlockVmShowcase, setActiveBadge, updateAcademyProfile, sendAcademyMessage, enrollMentorship }}>
       {children}
     </AppContext.Provider>
   );
