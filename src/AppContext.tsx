@@ -82,27 +82,43 @@ const defaultProgress: UserProgress = {
   mentorshipEnrollments: [],
 };
 
+const shouldUsePagesDemoProfile = () => {
+  if (typeof window === 'undefined') return false;
+  return window.location.hostname.endsWith('github.io');
+};
+
+const createInitialProgress = (): UserProgress => {
+  const saved = localStorage.getItem('beast_ai_progress');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    return {
+      ...defaultProgress,
+      ...parsed,
+      preferences: {
+        ...defaultProgress.preferences,
+        ...(parsed.preferences || {}),
+      },
+      certificationStatus: {
+        ...(parsed.certificationStatus || {}),
+      },
+    };
+  }
+
+  if (shouldUsePagesDemoProfile()) {
+    return {
+      ...defaultProgress,
+      hasOnboarded: true,
+      level: 'builder',
+    };
+  }
+
+  return defaultProgress;
+};
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [progress, setProgress] = useState<UserProgress>(() => {
-    const saved = localStorage.getItem('beast_ai_progress');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return {
-        ...defaultProgress,
-        ...parsed,
-        preferences: {
-          ...defaultProgress.preferences,
-          ...(parsed.preferences || {}),
-        },
-        certificationStatus: {
-          ...(parsed.certificationStatus || {}),
-        },
-      };
-    }
-    return defaultProgress;
-  });
+  const [progress, setProgress] = useState<UserProgress>(() => createInitialProgress());
 
   useEffect(() => {
     localStorage.setItem('beast_ai_progress', JSON.stringify(progress));
