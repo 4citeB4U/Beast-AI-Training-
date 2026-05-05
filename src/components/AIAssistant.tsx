@@ -34,12 +34,11 @@ MIT
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Bot, X, Send, Loader2, Mic, Settings2 } from 'lucide-react';
-import { askAssistant, generateSpeech, subscribeToAgentEvents, startVoiceSession, stopVoiceSession } from '../services/ai';
+import { Bot, X, Send, Loader2, Mic } from 'lucide-react';
+import { askAssistant, subscribeToAgentEvents, startVoiceSession, stopVoiceSession } from '../services/ai';
 import { Card, Button } from './UI';
 import { useApp } from '../AppContext';
 import { COURSES } from '../data';
-import { VoiceService } from 'leeway-sdk/src/core/VoiceService';
 
 const QUICK_PROMPTS = [
   'Career Plan',
@@ -47,7 +46,7 @@ const QUICK_PROMPTS = [
   'Show Me Tool Calling'
 ];
 
-export const AIAssistant: React.FC = () => {
+export const AIAssistant: React.FC<{ hideLauncher?: boolean }> = ({ hideLauncher = false }) => {
   const { progress } = useApp();
   const [isOpen, setIsOpen] = useState(false);
   const [isLive, setIsLive] = useState(false);
@@ -147,7 +146,15 @@ export const AIAssistant: React.FC = () => {
       if (isLive) {
         setIsSynthesizing(true);
         try {
-          await VoiceService.speak({ text: assistantMsg.text });
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            await new Promise<void>((resolve) => {
+              const utterance = new SpeechSynthesisUtterance(assistantMsg.text);
+              utterance.onend = () => resolve();
+              utterance.onerror = () => resolve();
+              window.speechSynthesis.speak(utterance);
+            });
+          }
         } finally {
           setIsSynthesizing(false);
         }
@@ -168,15 +175,23 @@ export const AIAssistant: React.FC = () => {
     setIsLive(!isLive);
   };
 
+  React.useEffect(() => {
+    const openHandler = () => setIsOpen(true);
+    window.addEventListener('beast-open-assistant', openHandler);
+    return () => window.removeEventListener('beast-open-assistant', openHandler);
+  }, []);
+
   return (
     <>
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-28 right-8 w-20 h-20 bg-emerald-600 text-white border-4 border-white shadow-2xl rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40 group"
-      >
-        <div className="absolute inset-0 bg-emerald-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
-        <Bot size={32} className="relative z-10" />
-      </button>
+      {!hideLauncher && (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-28 right-8 w-20 h-20 bg-emerald-600 text-white border-4 border-white shadow-2xl rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40 group"
+        >
+          <div className="absolute inset-0 bg-emerald-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
+          <Bot size={32} className="relative z-10" />
+        </button>
+      )}
 
       <AnimatePresence>
         {isOpen && (

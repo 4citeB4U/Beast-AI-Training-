@@ -35,25 +35,46 @@ MIT
 
 import React from 'react';
 import { Card, Button } from '../components/UI';
-import { Search, Filter, BookOpen, Lock, GraduationCap } from 'lucide-react';
+import { GraduationCap, Rocket, Bot } from 'lucide-react';
 import { COURSES } from '../data';
 import { useApp } from '../AppContext';
 
+const resolveCourseImage = (image: string): string => {
+  if (/^https?:\/\//i.test(image)) return image;
+  return `${import.meta.env.BASE_URL}${image.replace(/^\/+/, '')}`;
+};
+
+const fallbackCourseImage = `${import.meta.env.BASE_URL}assets/advanced.png`;
+
 export const LibraryView: React.FC<{
   onOpenModule: (courseId: string, moduleId: string) => void;
-}> = ({ onOpenModule }) => {
+  onNavigate: (view: any) => void;
+}> = ({ onOpenModule, onNavigate }) => {
   const { progress } = useApp();
   const [filterLevel, setFilterLevel] = React.useState(progress.level || 'beginner');
 
-  const filteredCourses = COURSES.filter(c => c.targetLevel === filterLevel);
-  const otherCourses = COURSES.filter(c => c.targetLevel !== filterLevel);
+  const orderedCourses = React.useMemo(() => {
+    const levelRank: Record<string, number> = {
+      beginner: 0,
+      builder: 1,
+      engineer: 2,
+    };
+
+    return [...COURSES].sort((a, b) => {
+      const aIsLeeway = a.id === 'leeway-standards-engineer';
+      const bIsLeeway = b.id === 'leeway-standards-engineer';
+      if (aIsLeeway && !bIsLeeway) return 1;
+      if (!aIsLeeway && bIsLeeway) return -1;
+      return (levelRank[a.targetLevel] ?? 99) - (levelRank[b.targetLevel] ?? 99);
+    });
+  }, []);
 
   return (
     <div className="space-y-6">
       <section className="flex justify-between items-end">
         <div>
            <h1 className="text-3xl font-black italic tracking-tighter uppercase text-white">Course Library.</h1>
-           <p className="text-neutral-500 font-medium italic">Your personalized sector: {filterLevel}</p>
+          <p className="text-neutral-500 font-medium italic">All Microsoft, Azure, Google, and Agent tracks are available here. Suggested start: {filterLevel}.</p>
         </div>
         <div className="flex gap-1">
             {['beginner', 'builder', 'engineer'].map(lvl => (
@@ -68,28 +89,49 @@ export const LibraryView: React.FC<{
         </div>
       </section>
 
+      <Card className="p-5 border-2 border-emerald-500 bg-emerald-50/50 space-y-3">
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-700">Hands-On Training Under Curriculum</p>
+        <h2 className="text-2xl font-black uppercase tracking-tight text-slate-900">Build Real AI Tools - Take-Home Toolkit</h2>
+        <p className="text-sm font-semibold text-slate-700 leading-relaxed">
+          Open the Tools tab to launch the full BeastTraining component, build low-code/no-code AI products, deploy working systems, and keep your take-home toolkit.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" variant="brutal" className="bg-emerald-600 text-white border-emerald-900" onClick={() => onNavigate('beast-training')}>
+            <Rocket size={12} /> Open Tools Tab
+          </Button>
+          <Button size="sm" variant="outline" className="border-violet-300 text-violet-700" onClick={() => window.dispatchEvent(new Event('beast-open-assistant'))}>
+            <Bot size={12} /> Ask Monk
+          </Button>
+        </div>
+      </Card>
+
       <div className="space-y-8">
-        {filteredCourses.length === 0 && (
-            <p className="text-center py-12 text-xs font-black text-neutral-400 uppercase tracking-widest border-2 border-dashed border-neutral-200">
-                No missions active in this sector.
-            </p>
-        )}
-        
-        {filteredCourses.map(course => (
+        {orderedCourses.map(course => (
           <div key={course.id} className="space-y-4">
             <div className="relative aspect-video border border-white/20 overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)] group tactical-image-container">
-              <img src={course.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" referrerPolicy="no-referrer" />
+              <img
+                src={resolveCourseImage(course.image)}
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100"
+                onError={(e) => {
+                  e.currentTarget.src = fallbackCourseImage;
+                }}
+              />
               <div className="tactical-overlay opacity-60" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-20" />
               <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between z-30">
                 <div>
                   <div className="flex gap-1 mb-1">
-                    <span className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-widest ${filterLevel === 'engineer' ? 'bg-red-500 text-white' : filterLevel === 'builder' ? 'bg-yellow-400 text-black' : 'bg-emerald-500 text-black'}`}>
-                        Active Mission
+                    <span className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-widest ${course.targetLevel === 'engineer' ? 'bg-red-500 text-white' : course.targetLevel === 'builder' ? 'bg-yellow-400 text-black' : 'bg-emerald-500 text-black'}`}>
+                        {course.targetLevel === filterLevel ? 'Recommended Now' : `Open Track • ${course.targetLevel}`}
                     </span>
                     {course.isCertificationCourse && (
                       <span className="px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-blue-500 text-white flex items-center gap-1 leading-none border border-white/20">
                         <GraduationCap size={10} /> PRO CERT
+                      </span>
+                    )}
+                    {course.id === 'leeway-standards-engineer' && (
+                      <span className="px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-purple-700 text-white border border-white/20">
+                        ADVANCED MASTERY
                       </span>
                     )}
                   </div>
@@ -97,6 +139,15 @@ export const LibraryView: React.FC<{
                 </div>
               </div>
             </div>
+
+            {course.id === 'leeway-standards-engineer' && (
+              <Card className="p-4 border-2 border-purple-700 bg-purple-50 text-purple-900">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1">Advanced Advisory</p>
+                <p className="text-xs font-bold leading-relaxed">
+                  Advanced Mastery Track. Recommended after Microsoft/Azure/Google completion. You can begin this path at any time.
+                </p>
+              </Card>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {course.modules.map(module => (
@@ -120,23 +171,6 @@ export const LibraryView: React.FC<{
             </div>
           </div>
         ))}
-
-        {/* Locked/Other Chapters */}
-        <div className="pt-8 border-t-2 border-black border-dashed">
-            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-neutral-400 mb-4">External Sectors</h3>
-            {otherCourses.map(course => (
-                <div key={course.id} className="flex items-center justify-between p-3 border-2 border-neutral-200 bg-neutral-50 mb-2 grayscale opacity-50">
-                    <div className="flex items-center gap-3">
-                        <Lock size={14} className="text-neutral-400" />
-                        <div>
-                            <p className="text-[10px] font-black uppercase tracking-tight">{course.title}</p>
-                            <p className="text-[8px] font-bold text-neutral-400 uppercase">Required: {course.targetLevel}</p>
-                        </div>
-                    </div>
-                    <button className="text-[8px] font-black uppercase tracking-widest text-neutral-300">Locked</button>
-                </div>
-            ))}
-        </div>
       </div>
     </div>
   );
